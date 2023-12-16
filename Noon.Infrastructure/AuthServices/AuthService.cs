@@ -18,7 +18,7 @@ using Noon.Application.Responses;
 using Noon.Application.Contracts.Persistence.IRepository;
 using Noon.Application.Exceptions;
 
-namespace Noon.Infrastructure.AuthService
+namespace Noon.Infrastructure.AuthServices
 {
     public class AuthService : IAuthServices
     {
@@ -103,7 +103,7 @@ namespace Noon.Infrastructure.AuthService
  
             }
 
-            if (!_refreshTokenValidator.Validate(userFromDb.RefreshToken.Value))
+            if (!_refreshTokenValidator.Validate(userFromDb.RefreshToken.Value!))
             {
                 userFromDb.RefreshToken = GenerateRefreshToken(userFromDb.Id);
 

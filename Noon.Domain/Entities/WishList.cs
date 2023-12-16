@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Noon.Domain.Entities
 {
-    internal class WishList
-    {
-    }
+    //public class WishList
+    //{
+    //}
 }

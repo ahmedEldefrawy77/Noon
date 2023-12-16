@@ -30,11 +30,13 @@ namespace Noon.Application.Features.UserFeatures.Handlers.Commands
                 throw new ArgumentNullException(nameof(request.UpdateUserDto) + "cannot be Null");
 
             User? userFromDb = await _unitOfWork.UserRepository.GetUserByIdAsync(request.UpdateUserDto.Id);
+            if(userFromDb == null)
+                throw new ArgumentNullException(nameof(userFromDb) + "something went wronge");
 
             _mapper.Map(request.UpdateUserDto, userFromDb);
 
             await _unitOfWork.UserRepository.UpdateAsync(userFromDb);
-            await _unitOfWork.Save();
+            
             return Unit.Value;
 
         }

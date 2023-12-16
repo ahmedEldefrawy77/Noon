@@ -51,7 +51,7 @@ namespace Noon.Application.Features.UserFeatures.Handlers.Commands
                 User userDtoToUser = _mapper.Map<User>(request.RegisterUserDto);
 
                 await _unitOfWork.UserRepository.AddAsync(userDtoToUser);
-                await _unitOfWork.Save();
+               
 
                 response.Status = true;
                 response.ResponseNumber = 200;

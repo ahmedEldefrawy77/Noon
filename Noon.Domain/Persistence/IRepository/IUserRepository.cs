@@ -10,10 +10,12 @@ namespace Noon.Application.Contracts.Persistence.IRepository
 {
     public interface IUserRepository : IGenericRepository<User>
     {
-        Task<User> GetUserByIdAsync(Guid id);
-        Task<List<User>> GetAllUsersAsync();
-        Task<User> GetUserWithEmail(string email);
+        Task<User?> GetUserByIdAsync(Guid? id);
+        Task<User?> GetUserWithEmail(string email);
         Task<bool> IsEmailUniq(string email);
+        Task<User?> GetUserByToken(string token);
+        Task<IReadOnlyCollection<User>> GetAllUsersAsync();
+      
 
 
     }

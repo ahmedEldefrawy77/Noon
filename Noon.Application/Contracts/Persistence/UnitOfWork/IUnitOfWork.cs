@@ -10,6 +10,6 @@ namespace Noon.Application.Contracts.Persistence.UnitOfWork
     public interface IUnitOfWork : IDisposable
     {
         IUserRepository UserRepository { get; }
-        Task Save();
+       
     }
 }
