@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Noon.Domain.Entities
+namespace Noon.Domain.Entities.Tokens
 {
     public class RefreshToken : BaseEntity
     {

@@ -11,6 +11,6 @@ namespace Noon.Application.Features.UserFeatures.Requests.Commands
 {
     public class CreateUserRequest :IRequest<BaseCommonResponse>
     {
-        public CreateUserDto? CreateUserDto { get; set; }
+        public RegisterUserDto? RegisterUserDto { get; set; }
     }
 }

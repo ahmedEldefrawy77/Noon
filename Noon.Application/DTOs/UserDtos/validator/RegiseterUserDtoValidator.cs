@@ -7,13 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Noon.Application.DTOs.Validator
+namespace Noon.Application.DTOs.UserDtos.validator
 {
-    public class CreateUserValidator : AbstractValidator<CreateUserDto>
+    public class RegiseterUserDtoValidator : AbstractValidator<RegisterUserDto>
     {
         private readonly IUserRepository _userRepository;
 
-        public CreateUserValidator(IUserRepository userRepository)
+        public RegiseterUserDtoValidator(IUserRepository userRepository)
         {
             _userRepository = userRepository;
             RuleFor(p => p.FirstName)
@@ -22,7 +22,7 @@ namespace Noon.Application.DTOs.Validator
                 .Matches("?<FirstName>[A-Z]\\.?\\w*\\-?[A-Z]?\\w*)\\s?").WithMessage("{PropertyName} Must be a Valid Name")
                 .MaximumLength(50).WithMessage("{ProppertyName} Must not Exceed 50 Charachter");
 
-            RuleFor(p=>p.LastName)
+            RuleFor(p => p.LastName)
                 .NotEmpty().WithMessage("{PropertyName} Couldnot be Empty")
                 .NotNull()
                 .Matches("?<FirstName>[A-Z]\\.?\\w*\\-?[A-Z]?\\w*)\\s?").WithMessage("{PropertyName} Must be a Valid Name")
@@ -30,9 +30,10 @@ namespace Noon.Application.DTOs.Validator
 
             RuleFor(p => p.Email).NotEmpty().WithMessage("{PropertyName} Couldnot be Empty")
                 .NotNull()
-                .MustAsync(async (email , _) =>{
+                .MustAsync(async (email, _) =>
+                {
                     return await _userRepository.IsEmailUniq(email);
-            }).WithMessage("Email is Existed before, choose another one")
+                }).WithMessage("Email is Existed before, choose another one")
                 .EmailAddress().WithMessage("{PropertyName} Must be a Valid Email Address")
                 .Matches("^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$");
 
@@ -44,7 +45,7 @@ namespace Noon.Application.DTOs.Validator
                 .WithMessage("{PropertyName} Couldnot be Empty")
                .NotNull()
                .MinimumLength(5).WithMessage("Password lenght should be atleast 5");
-           
+
         }
     }
 }

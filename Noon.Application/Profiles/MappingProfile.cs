@@ -4,6 +4,7 @@ using Noon.Application.DTOs.AddressDto;
 using Noon.Application.DTOs.RefreshTokenDataTransferO;
 using Noon.Application.DTOs.UserDtos;
 using Noon.Domain.Entities;
+using Noon.Domain.Entities.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;

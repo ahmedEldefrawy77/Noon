@@ -1,5 +1,6 @@
 ﻿using Noon.Domain.Common;
 using Noon.Domain.Entities.Products;
+using Noon.Domain.Entities.Tokens;
 
 
 namespace Noon.Domain.Entities

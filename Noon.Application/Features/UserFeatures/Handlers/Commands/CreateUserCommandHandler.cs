@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using MediatR;
 using Noon.Application.Contracts.Persistence.IRepository;
 using Noon.Application.Contracts.Persistence.UnitOfWork;
-using Noon.Application.DTOs.Validator;
+using Noon.Application.DTOs.UserDtos;
+using Noon.Application.DTOs.UserDtos.validator;
 using Noon.Application.Features.UserFeatures.Requests.Commands;
 using Noon.Application.Responses;
 using Noon.Domain.Entities;
@@ -29,13 +31,13 @@ namespace Noon.Application.Features.UserFeatures.Handlers.Commands
         public async Task<BaseCommonResponse> Handle(CreateUserRequest request, CancellationToken cancellationToken)
         {
             BaseCommonResponse response = new BaseCommonResponse();
-            CreateUserValidator validator = new CreateUserValidator(_userRepository);
+            RegiseterUserDtoValidator validator = new RegiseterUserDtoValidator(_userRepository);
 
-            if(request.CreateUserDto == null)
+            if(request.RegisterUserDto == null)
                 throw new ArgumentNullException(nameof(request));
 
 
-            var validationResult = await validator.ValidateAsync(request.CreateUserDto);
+            var validationResult = await validator.ValidateAsync(request.RegisterUserDto);
             if ( validationResult.IsValid == false)
             {
                 response.Status = false;
@@ -44,8 +46,10 @@ namespace Noon.Application.Features.UserFeatures.Handlers.Commands
             }
             else
             {
-                request.CreateUserDto.Password = BCrypt.Net.BCrypt.HashPassword(request.CreateUserDto.Password);
-                User userDtoToUser = _mapper.Map<User>(request.CreateUserDto);
+                request.RegisterUserDto.Password = BCrypt.Net.BCrypt.HashPassword(request.RegisterUserDto.Password);
+
+                User userDtoToUser = _mapper.Map<User>(request.RegisterUserDto);
+
                 await _unitOfWork.UserRepository.AddAsync(userDtoToUser);
                 await _unitOfWork.Save();
 

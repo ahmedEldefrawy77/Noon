@@ -16,4 +16,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Noon.Application\Noon.Application.csproj" />
+    <ProjectReference Include="..\Noon.Domain\Noon.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
