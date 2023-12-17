@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Noon.Api.Controllers.BaseController;
 using Noon.Application.Contracts.Identity;
 using Noon.Application.DTOs.Record;
 using Noon.Application.Responses;

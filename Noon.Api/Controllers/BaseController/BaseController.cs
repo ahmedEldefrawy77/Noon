@@ -6,7 +6,7 @@ using Noon.Domain.Common;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace Noon.Api.Controllers
+namespace Noon.Api.Controllers.BaseController
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -19,17 +19,17 @@ namespace Noon.Api.Controllers
             _repository = repository;
         }
 
-      
+
         public virtual async Task<IActionResult> Get(Guid id)
         {
             BaseCommonResponse response = new BaseCommonResponse();
 
             T? entity = await _repository.GetAsync(id);
-            if(entity == null)
+            if (entity == null)
             {
                 NotFoundException ex = new(nameof(entity), id);
                 response.Status = false;
-                response.ResponseNumber = 401; 
+                response.ResponseNumber = 401;
                 response.Response = ex;
 
                 return BadRequest(response);
@@ -40,13 +40,13 @@ namespace Noon.Api.Controllers
                 response.Status = true;
                 response.ResponseNumber = 200;
                 response.Response = entity;
-               
+
                 return Ok(response);
             }
 
         }
 
-      
+
         public virtual async Task<IActionResult> Post(T entity)
         {
             BaseCommonResponse response = new BaseCommonResponse();
@@ -60,7 +60,7 @@ namespace Noon.Api.Controllers
             return Ok(response);
         }
 
-     
+
         public virtual async Task<IActionResult> Put(T entity)
         {
             await _repository.UpdateAsync(entity);
@@ -73,12 +73,12 @@ namespace Noon.Api.Controllers
             return Ok(response);
         }
 
-      
+
         public virtual async Task<IActionResult> Delete(Guid id)
         {
             BaseCommonResponse response = new BaseCommonResponse();
-           T? entity = await _repository.GetAsync(id);
-            if(entity == null)
+            T? entity = await _repository.GetAsync(id);
+            if (entity == null)
             {
                 NotFoundException ex = new(nameof(entity), id);
                 response.Status = false;
@@ -95,7 +95,7 @@ namespace Noon.Api.Controllers
                 response.Response = "Delete Succeded";
                 return Ok(response);
             }
-           
+
 
         }
         protected void SetCookie(string name, string? value, DateTime expireTime)

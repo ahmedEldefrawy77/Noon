@@ -93,7 +93,13 @@ namespace Noon.Infrastructure.AuthServices
             }
 
             if (!BCrypt.Net.BCrypt.Verify(userRequest.Password, userFromDb.Password))
-                throw new ArgumentException($"{nameof(userRequest)} Password is not Correct.");
+            {
+             
+                response.Status = false;
+                response.ResponseNumber = 400;
+                response.Response = "Password is not Correct please try again Later";
+                return response;
+            }
 
             if (userFromDb.RefreshToken == null)
             {
@@ -115,10 +121,11 @@ namespace Noon.Infrastructure.AuthServices
  
             }
             Token token = GenerateToken(userFromDb, userFromDb.RefreshToken);
-
+            response.Id = userFromDb.Id;
             response.Status = true;
             response.ResponseNumber = 200;
-            response.Response = token;
+            response.Response = "Login Succeded";
+            response.Token = token;
             return response;
         }
 

@@ -5,19 +5,19 @@ using Noon.Application.Contracts.Persistence.UnitOfWork;
 using Noon.Domain.Common;
 using Noon.Domain.Persistence.IBaseRepository;
 
-namespace Noon.Api.Controllers
+namespace Noon.Api.Controllers.BaseController
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BaseNameSettingController<T> : BaseController<T>  where T : BaseEntityUserSettings
+    public class BaseNameSettingController<T> : BaseController<T> where T : BaseEntityUserSettings
     {
         private readonly IBaseUserSettingRepository<T> _repository;
 
-        public BaseNameSettingController(IBaseUserSettingRepository<T> repository): base(repository)
+        public BaseNameSettingController(IBaseUserSettingRepository<T> repository) : base(repository)
         {
             _repository = repository;
         }
-        public async virtual Task<IActionResult> SearchByName(string fName,string lName)
+        public async virtual Task<IActionResult> SearchByName(string fName, string lName)
         {
             IEnumerable<T?> entities = await _repository.SearchByName(fName, lName);
             return Ok(entities);

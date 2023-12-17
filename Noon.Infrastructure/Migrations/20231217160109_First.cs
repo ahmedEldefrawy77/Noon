@@ -4,7 +4,7 @@
 
 namespace Noon.Infrastructure.Migrations
 {
-    public partial class New : Migration
+    public partial class First : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

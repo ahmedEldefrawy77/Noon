@@ -12,8 +12,8 @@ using Noon.Infrastructure;
 namespace Noon.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231217144238_New")]
-    partial class New
+    [Migration("20231217160109_First")]
+    partial class First
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
