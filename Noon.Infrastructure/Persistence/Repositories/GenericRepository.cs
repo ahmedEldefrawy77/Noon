@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Noon.Application.Contracts.Persistence.IBaseRepository;
+using Noon.Domain.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Noon.Infrastructure.Persistence.Repositories
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         private readonly ApplicationDbContext _context;
         protected DbSet<T> _dbSet;

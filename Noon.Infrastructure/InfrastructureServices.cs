@@ -1,10 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Noon.Application.Contracts.Identity;
 using Noon.Application.Contracts.Persistence.IBaseRepository;
 using Noon.Application.Contracts.Persistence.IRepository;
 using Noon.Application.Contracts.Persistence.UnitOfWork;
+using Noon.Application.DTOs.UserDtos;
+using Noon.Application.DTOs.UserDtos.validator;
+using Noon.Application.DTOs.Validator;
+using Noon.Domain.Persistence.IBaseRepository;
 using Noon.Domain.Persistence.IRepository;
 using Noon.Infrastructure.AuthServices;
 using Noon.Infrastructure.IdentityProvider;
@@ -28,11 +33,20 @@ namespace Noon.Infrastructure
                                                                configuration.GetConnectionString("DefaultConnection")!, b => b.MigrationsAssembly("Noon.Infrastructure")));
 
          
-            services.AddScoped(typeof(IGenericRepository<>), typeof(IGenericRepository<>));
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped(typeof(IBaseUserSettingRepository<>), typeof(BaseUserSettingRepository<>));
+          
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<IAuthServices, AuthService>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+
+            services.AddSingleton<RefreshTokenValidator>();
+
+            services.AddTransient<IValidator<RegisterUserDto>, RegiseterUserDtoValidator>();
+            services.AddTransient<IValidator<IUserDto>, IUserValidator>();
+
             services.AddSingleton<IJwtProvider, JwtProvider>();
             return services;
         }

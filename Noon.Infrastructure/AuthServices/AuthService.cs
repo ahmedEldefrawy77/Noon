@@ -17,10 +17,12 @@ using Noon.Application.Features.UserFeatures.Requests.Commands;
 using Noon.Application.Responses;
 using Noon.Application.Contracts.Persistence.IRepository;
 using Noon.Application.Exceptions;
+using Noon.Infrastructure.Persistence.Repositories;
+using Microsoft.Extensions.Options;
 
 namespace Noon.Infrastructure.AuthServices
 {
-    public class AuthService : IAuthServices
+    public class AuthService : GenericRepository<User>, IAuthServices
     {
         private readonly IJwtProvider _jwtProvider;
         private readonly RefreshOptions _refreshOptions;
@@ -30,17 +32,17 @@ namespace Noon.Infrastructure.AuthServices
         private readonly IUserRepository _userRepository;
         private readonly RefreshTokenValidator _refreshTokenValidator;
 
-        public AuthService(IJwtProvider jwtProvider,
-            RefreshOptions refreshOptions,
-            AccessOptions accessOptions,
+        public AuthService(ApplicationDbContext context,IJwtProvider jwtProvider,
+            IOptions<RefreshOptions> refreshOptions,
+            IOptions<AccessOptions> accessOptions,
             IMediator mediator,
             IMapper mapper,
             IUserRepository userRepository,
-            RefreshTokenValidator refreshTokenValidator)
+            RefreshTokenValidator refreshTokenValidator) : base(context)
         {
             _jwtProvider = jwtProvider;
-            _refreshOptions = refreshOptions;
-            _accessOptions = accessOptions;
+            _refreshOptions = refreshOptions.Value;
+            _accessOptions = accessOptions.Value;
             _mediator = mediator;
             _mapper = mapper;
             _userRepository = userRepository;

@@ -19,6 +19,7 @@ namespace Noon.Application.Profiles
         {
             CreateMap<User, UserDto>().ReverseMap();
             CreateMap<User, CreateUserDto>().ReverseMap();
+            CreateMap<User, RegisterUserDto>().ReverseMap();
             CreateMap<Address, AddressDto>().ReverseMap();
             CreateMap<RefreshToken, RefreshTokenDto>().ReverseMap();
         }

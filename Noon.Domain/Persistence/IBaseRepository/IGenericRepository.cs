@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Noon.Domain.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Noon.Application.Contracts.Persistence.IBaseRepository
 {
-    public interface IGenericRepository<T> where T : class
+    public interface IGenericRepository<T> where T : BaseEntity
     {
        
         Task<IReadOnlyList<T>> GetAllAsync();

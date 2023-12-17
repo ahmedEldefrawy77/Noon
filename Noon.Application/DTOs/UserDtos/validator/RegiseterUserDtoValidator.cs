@@ -18,14 +18,12 @@ namespace Noon.Application.DTOs.UserDtos.validator
             _userRepository = userRepository;
             RuleFor(p => p.FirstName)
                 .NotEmpty().WithMessage("{PropertyName} Couldnot be Empty")
-                .NotNull()
-                .Matches("?<FirstName>[A-Z]\\.?\\w*\\-?[A-Z]?\\w*)\\s?").WithMessage("{PropertyName} Must be a Valid Name")
+                .NotNull().WithMessage("{PropertyName} Couldnot be Null")
                 .MaximumLength(50).WithMessage("{ProppertyName} Must not Exceed 50 Charachter");
 
             RuleFor(p => p.LastName)
                 .NotEmpty().WithMessage("{PropertyName} Couldnot be Empty")
-                .NotNull()
-                .Matches("?<FirstName>[A-Z]\\.?\\w*\\-?[A-Z]?\\w*)\\s?").WithMessage("{PropertyName} Must be a Valid Name")
+                .NotNull().WithMessage("{PropertyName} Couldnot be Null")
                 .MaximumLength(50).WithMessage("{ProppertyName} Must not Exceed 50 Charachter");
 
             RuleFor(p => p.Email).NotEmpty().WithMessage("{PropertyName} Couldnot be Empty")
@@ -34,12 +32,11 @@ namespace Noon.Application.DTOs.UserDtos.validator
                 {
                     return await _userRepository.IsEmailUniq(email);
                 }).WithMessage("Email is Existed before, choose another one")
-                .EmailAddress().WithMessage("{PropertyName} Must be a Valid Email Address")
-                .Matches("^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$");
+                .EmailAddress().WithMessage("{PropertyName} Must be a Valid Email Address");
 
             RuleFor(p => p.PhoneNumber).NotEmpty().WithMessage("{PropertyName} Couldnot be Empty")
-               .NotNull()
-               .Matches("^(?:(?<1>[(])?(?<AreaCode>[2-9]\\d{2})(?(1)[)])(?(1)(?<2>[ ])|(?:(?<3>[-])|(?<4>[ ])))?)?(?<Prefix>[1-9]\\d{2})(?(AreaCode)(?:(?(1)(?(2)[- ]|[-]?))|(?(3)[-])|(?(4)[- ]))|[- ]?)(?<Suffix>\\d{4})$");
+               .NotNull().WithMessage("{PropertyName} Couldnot be Null");
+
 
             RuleFor(p => p.Password).NotEmpty()
                 .WithMessage("{PropertyName} Couldnot be Empty")
