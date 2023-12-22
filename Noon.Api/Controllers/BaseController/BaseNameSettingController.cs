@@ -7,20 +7,20 @@ using Noon.Domain.Persistence.IBaseRepository;
 
 namespace Noon.Api.Controllers.BaseController
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class BaseNameSettingController<T> : BaseController<T> where T : BaseEntityUserSettings
-    {
-        private readonly IBaseUserSettingRepository<T> _repository;
+    //[Route("api/[controller]")]
+    //[ApiController]
+    //public class BaseNameSettingController<T> : BaseController<T> where T : BaseEntityUserSettings
+    //{
+    //    private readonly IBaseUserSettingRepository<T> _repository;
 
-        public BaseNameSettingController(IBaseUserSettingRepository<T> repository) : base(repository)
-        {
-            _repository = repository;
-        }
-        public async virtual Task<IActionResult> SearchByName(string fName, string lName)
-        {
-            IEnumerable<T?> entities = await _repository.SearchByName(fName, lName);
-            return Ok(entities);
-        }
-    }
+    //    public BaseNameSettingController(IBaseUserSettingRepository<T> repository) : base(repository)
+    //    {
+    //        _repository = repository;
+    //    }
+    //    public async virtual Task<IActionResult> SearchByName(string fName, string lName)
+    //    {
+    //        IEnumerable<T?> entities = await _repository.SearchByName(fName, lName);
+    //        return Ok(entities);
+    //    }
+    //}
 }

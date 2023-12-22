@@ -26,14 +26,14 @@ namespace Noon.Application.Features.UserFeatures.Handlers.Commands
         }
         public  async Task<Unit> Handle(UpdateUserRequest request, CancellationToken cancellationToken)
         {
-           if(request.UpdateUserDto == null)
-                throw new ArgumentNullException(nameof(request.UpdateUserDto) + "cannot be Null");
+           if(request.UserRequest == null)
+                throw new ArgumentNullException(nameof(request.UserRequest) + "cannot be Null");
 
-            User? userFromDb = await _unitOfWork.UserRepository.GetUserByIdAsync(request.UpdateUserDto.Id);
+            User? userFromDb = await _unitOfWork.UserRepository.GetUserByIdAsync(request.Id);
             if(userFromDb == null)
-                throw new ArgumentNullException(nameof(userFromDb) + "something went wronge");
+                throw new ArgumentNullException(nameof(userFromDb) + "Invalid Token");
 
-            _mapper.Map(request.UpdateUserDto, userFromDb);
+            _mapper.Map(request.UserRequest, userFromDb);
 
             await _unitOfWork.UserRepository.UpdateAsync(userFromDb);
             

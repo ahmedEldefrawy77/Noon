@@ -19,6 +19,7 @@ using Noon.Application.Contracts.Persistence.IRepository;
 using Noon.Application.Exceptions;
 using Noon.Infrastructure.Persistence.Repositories;
 using Microsoft.Extensions.Options;
+using Noon.Domain.Persistence.IRepository;
 
 namespace Noon.Infrastructure.AuthServices
 {
@@ -31,6 +32,7 @@ namespace Noon.Infrastructure.AuthServices
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
         private readonly RefreshTokenValidator _refreshTokenValidator;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
 
         public AuthService(ApplicationDbContext context,IJwtProvider jwtProvider,
             IOptions<RefreshOptions> refreshOptions,
@@ -38,7 +40,8 @@ namespace Noon.Infrastructure.AuthServices
             IMediator mediator,
             IMapper mapper,
             IUserRepository userRepository,
-            RefreshTokenValidator refreshTokenValidator) : base(context)
+            RefreshTokenValidator refreshTokenValidator,
+            IRefreshTokenRepository refreshTokenRepository) : base(context)
         {
             _jwtProvider = jwtProvider;
             _refreshOptions = refreshOptions.Value;
@@ -47,6 +50,7 @@ namespace Noon.Infrastructure.AuthServices
             _mapper = mapper;
             _userRepository = userRepository;
             _refreshTokenValidator = refreshTokenValidator;
+            _refreshTokenRepository = refreshTokenRepository;
         }
         #region Generating Token
         private Token GenerateToken(User user, RefreshToken refreshToken)
@@ -78,8 +82,7 @@ namespace Noon.Infrastructure.AuthServices
         #endregion
         public async Task<BaseCommonResponse> Login(UserLoginRequest userRequest)
         {
-            if (userRequest == null || userRequest.Email == null)
-                throw new ArgumentNullException(nameof(userRequest));
+            
 
             BaseCommonResponse response = new BaseCommonResponse();
             User? userFromDb = await _userRepository.GetUserWithEmail(userRequest.Email);
@@ -103,21 +106,17 @@ namespace Noon.Infrastructure.AuthServices
 
             if (userFromDb.RefreshToken == null)
             {
-                userFromDb.RefreshToken = GenerateRefreshToken(userFromDb.Id); 
+                userFromDb.RefreshToken = GenerateRefreshToken(userFromDb.Id);
 
-                UpdateUserDto userDto = _mapper.Map<UpdateUserDto>(userFromDb);
+                await _userRepository.UpdateAsync(userFromDb);
 
-               await _mediator.Send(new UpdateUserRequest { UpdateUserDto =  userDto });
- 
             }
 
             if (!_refreshTokenValidator.Validate(userFromDb.RefreshToken.Value!))
             {
                 userFromDb.RefreshToken = GenerateRefreshToken(userFromDb.Id);
 
-                UpdateUserDto userDto = _mapper.Map<UpdateUserDto>(userFromDb);
-
-                await _mediator.Send(new UpdateUserRequest { UpdateUserDto = userDto });
+               await _userRepository.UpdateAsync(userFromDb);
  
             }
             Token token = GenerateToken(userFromDb, userFromDb.RefreshToken);
@@ -152,5 +151,60 @@ namespace Noon.Infrastructure.AuthServices
             return response;
         }
 
+        public async Task<BaseCommonResponse> Logout(string refreshToken)
+        {
+            BaseCommonResponse response = new BaseCommonResponse();
+
+            if (refreshToken == null || refreshToken == string.Empty)
+                throw new ArgumentException("Invalid Token");
+
+            User? userFromDb = await _userRepository.GetUserByToken(refreshToken);
+            if (userFromDb == null || !_refreshTokenValidator.Validate(refreshToken))
+            {
+
+                response.Status = false;
+                response.ResponseNumber = 400;
+                response.Response = "Invalid Token";
+                return response;
+            }
+            await _refreshTokenRepository.DeleteWithIdAsync(userFromDb.RefreshToken.Id);
+
+            response.Status = true;
+            response.ResponseNumber = 200;
+            response.Response = "User Loged Out ";
+
+            return response;
+
+           
+        }
+
+        public async Task<BaseCommonResponse> Update(UpdateUserDto request, Guid id)
+        {
+            BaseCommonResponse response = new BaseCommonResponse();
+            User? userFromDb = await _userRepository.GetUserByIdAsync(id);
+            if (userFromDb == null)
+                throw new ArgumentNullException(nameof(request), "Invalid Token");
+
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+
+           Unit unit =  await _mediator.Send(new UpdateUserRequest { UserRequest = request ,Id = id});
+
+            response.Status = true;
+            response.ResponseNumber =200;
+            response.Response = unit;
+
+            return response;
+        }
+
+        public async Task<BaseCommonResponse> UpdatePassword(PasswordRecord password, Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<BaseCommonResponse> GetUserByToken(string token)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

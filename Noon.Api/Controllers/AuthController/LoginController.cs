@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Noon.Api.Controllers.BaseController;
 using Noon.Application.Contracts.Identity;
 using Noon.Application.DTOs.Record;
+using Noon.Application.Features.UserFeatures.Requests.Queries;
 using Noon.Application.Responses;
 using Noon.Domain.Entities;
 
@@ -12,17 +14,17 @@ namespace Noon.Api.Controllers.AuthController
     [ApiController]
     public class LoginController  : BaseController<User>
     {
-        private readonly IAuthServices _service;
+        private readonly IMediator _mediator;
 
-        public LoginController(IAuthServices service) : base(service)
+        public LoginController(IMediator mediator)
         {
-          _service = service;
+           _mediator = mediator;
         }
 
         [HttpPost]
         public async Task<IActionResult> Login(UserLoginRequest loginRequest)
         {
-            BaseCommonResponse response = await _service.Login(loginRequest);
+            BaseCommonResponse response = await _mediator.Send(new LoginUserRequest {userRequest = loginRequest});
             if(response.Token != null)
             {
                 SetCookie("AccessToken",

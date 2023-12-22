@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Noon.Application.Contracts.Persistence.IRepository;
 using Noon.Application.DTOs.UserDtos;
+using Noon.Application.DTOs.Validator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,16 +17,9 @@ namespace Noon.Application.DTOs.UserDtos.validator
         public RegiseterUserDtoValidator(IUserRepository userRepository)
         {
             _userRepository = userRepository;
-            RuleFor(p => p.FirstName)
-                .NotEmpty().WithMessage("{PropertyName} Couldnot be Empty")
-                .NotNull().WithMessage("{PropertyName} Couldnot be Null")
-                .MaximumLength(50).WithMessage("{ProppertyName} Must not Exceed 50 Charachter");
 
-            RuleFor(p => p.LastName)
-                .NotEmpty().WithMessage("{PropertyName} Couldnot be Empty")
-                .NotNull().WithMessage("{PropertyName} Couldnot be Null")
-                .MaximumLength(50).WithMessage("{ProppertyName} Must not Exceed 50 Charachter");
-
+            Include(new IUserValidator());
+             
             RuleFor(p => p.Email).NotEmpty().WithMessage("{PropertyName} Couldnot be Empty")
                 .NotNull()
                 .MustAsync(async (email, _) =>
@@ -33,10 +27,6 @@ namespace Noon.Application.DTOs.UserDtos.validator
                     return await _userRepository.IsEmailUniq(email);
                 }).WithMessage("Email is Existed before, choose another one")
                 .EmailAddress().WithMessage("{PropertyName} Must be a Valid Email Address");
-
-            RuleFor(p => p.PhoneNumber).NotEmpty().WithMessage("{PropertyName} Couldnot be Empty")
-               .NotNull().WithMessage("{PropertyName} Couldnot be Null");
-
 
             RuleFor(p => p.Password).NotEmpty()
                 .WithMessage("{PropertyName} Couldnot be Empty")

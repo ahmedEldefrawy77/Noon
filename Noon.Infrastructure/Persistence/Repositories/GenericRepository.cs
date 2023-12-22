@@ -57,8 +57,16 @@ namespace Noon.Infrastructure.Persistence.Repositories
 
         public async Task UpdateAsync(T entity)
         {
-           await Task.Run(()=> _context.Update(entity));
-            await _context.SaveChangesAsync();
+            try
+            {
+                await Task.Run(() => _context.Update(entity));
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.InnerException.ToString());
+            }
+                       
         }
 
 

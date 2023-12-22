@@ -20,8 +20,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 
-builder.Services.ConfigureInfrastructureServices(builder.Configuration);
 builder.Services.ConfigureApplicationService();
+builder.Services.ConfigureInfrastructureServices(builder.Configuration);
+
 
 var app = builder.Build();
 

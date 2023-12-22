@@ -15,7 +15,7 @@ namespace Noon.Api.Controllers.AuthController
     {
         private readonly IAuthServices _service;
 
-        public RegisterController(IAuthServices service) : base(service) => _service = service;
+        public RegisterController(IAuthServices service)  => _service = service;
         
         [HttpPost]
         public async Task<IActionResult> Post(CreateUserDto userRequest)
