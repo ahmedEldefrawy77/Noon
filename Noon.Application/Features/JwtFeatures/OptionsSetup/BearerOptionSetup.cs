@@ -26,7 +26,7 @@ namespace Noon.Application.Features.JwtFeatures.OptionsSetup
             {
                 ValidateIssuer = false,
                 ValidateAudience = false,
-                ValidateLifetime = true,
+                ValidateLifetime = false,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(_jwtOptions.SecretKey))

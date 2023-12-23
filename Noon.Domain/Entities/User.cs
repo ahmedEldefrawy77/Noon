@@ -1,6 +1,7 @@
 ﻿using Noon.Domain.Common;
 using Noon.Domain.Entities.Products;
 using Noon.Domain.Entities.Tokens;
+using System.Text.Json.Serialization;
 
 
 namespace Noon.Domain.Entities
@@ -16,8 +17,9 @@ namespace Noon.Domain.Entities
         public ICollection<Order>? Orders { get; set; }  
         public ICollection<Address>? Address {  get; set; }
         public ICollection<Return>? Returns { get; set; }
-        public ICollection<Product>? Products { get; set; }
-        
+        //public ICollection<WarrantyClaim>? WarrantyClaims { get; set; }
+        public WishList? WishList { get; set; }
+        [JsonIgnore]
         public RefreshToken RefreshToken { get; set; } = new RefreshToken();
 
     }

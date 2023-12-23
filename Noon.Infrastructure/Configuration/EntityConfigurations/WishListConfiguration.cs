@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Noon.Domain.Entities.Products;
+using Noon.Domain.Entities;
 using Noon.Infrastructure.Configuration.BaseConfig;
 using System;
 using System.Collections.Generic;
@@ -9,16 +9,12 @@ using System.Threading.Tasks;
 
 namespace Noon.Infrastructure.Configuration.EntityConfigurations
 {
-    public class ProductConfiguration : BaseConfiguration<Product>
+    public class WishListConfiguration : BaseConfiguration<WishList>
     {
-        public override void Configure(EntityTypeBuilder<Product> builder)
+        public WishListConfiguration(EntityTypeBuilder<WishList> builder) 
         {
             base.Configure(builder);
-
-            builder.HasOne(e => e.Order).WithMany().HasForeignKey(e => e.OrderId);
-
-            
-           
+            builder.HasOne(e => e.User).WithOne().HasForeignKey<WishList>(e => e.UsertId);
         }
     }
 }

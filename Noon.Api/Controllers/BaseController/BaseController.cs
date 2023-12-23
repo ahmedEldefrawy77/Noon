@@ -32,7 +32,7 @@ namespace Noon.Api.Controllers.BaseController
 
 
         protected Guid GetUserId()
-   => new(User.FindFirst("Id")?.Value);
+          => new(User.FindFirst("Id")?.Value);
 
         //public virtual async Task<IActionResult> Get(Guid id)
         //{

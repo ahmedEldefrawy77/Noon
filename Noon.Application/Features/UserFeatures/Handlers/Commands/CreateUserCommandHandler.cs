@@ -55,7 +55,7 @@ namespace Noon.Application.Features.UserFeatures.Handlers.Commands
 
                 response.Status = true;
                 response.ResponseNumber = 200;
-                response.Response = "User Created";
+                response.Response = userDtoToUser;
                 response.Id = userDtoToUser.Id;
             }
             return response;

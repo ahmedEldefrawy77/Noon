@@ -9,16 +9,15 @@ using System.Threading.Tasks;
 
 namespace Noon.Infrastructure.Configuration.EntityConfigurations
 {
-    public class ProductConfiguration : BaseConfiguration<Product>
+    public class BrandConfiguration : BaseConfiguration<Brand>
     {
-        public override void Configure(EntityTypeBuilder<Product> builder)
+        public BrandConfiguration(EntityTypeBuilder<Brand> builder) 
         {
             base.Configure(builder);
 
-            builder.HasOne(e => e.Order).WithMany().HasForeignKey(e => e.OrderId);
+            builder.Property(e=>e.Name).IsRequired();
 
-            
-           
+            builder.HasMany(e => e.Products).WithOne().HasForeignKey(e=>e.BrandId);
         }
     }
 }

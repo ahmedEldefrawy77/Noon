@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Noon.Application.Contracts.Persistence.IBaseRepository;
 using Noon.Domain.Common;
 using System;
@@ -67,6 +68,16 @@ namespace Noon.Infrastructure.Persistence.Repositories
                 Console.WriteLine(ex.InnerException.ToString());
             }
                        
+        }
+        protected Guid GetUserIdFromClaims(HttpContext? context)
+        {
+
+            if (context == null)
+                throw new InvalidOperationException("This operation requires an active HTTP context.");
+
+            var claimsId = context.User.FindFirst("Id") ?? new("Id", Guid.Empty.ToString());
+
+            return new(claimsId.Value);
         }
 
 

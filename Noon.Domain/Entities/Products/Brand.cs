@@ -1,17 +1,15 @@
 ﻿using Noon.Domain.Common;
-using Noon.Domain.Entities.Products;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Noon.Domain.Entities
+namespace Noon.Domain.Entities.Products
 {
-    public class WishList : BaseEntity
+    public class Brand : BaseEntity
     {
-        public User? User { get; set; }
-        public Guid UsertId { get; set; }
+        public string Name { get; set; } = string.Empty;
         public ICollection<Product>? Products { get; set; }
     }
 }

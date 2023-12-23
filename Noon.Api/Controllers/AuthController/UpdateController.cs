@@ -10,6 +10,7 @@ using Noon.Application.DTOs.UserDtos;
 using Noon.Application.Features.UserFeatures.Requests.Commands;
 using Noon.Application.Responses;
 using Noon.Domain.Entities;
+using System.Net.Http;
 using System.Security.Claims;
 
 namespace Noon.Api.Controllers.AuthController
@@ -20,22 +21,28 @@ namespace Noon.Api.Controllers.AuthController
     {
         
         private readonly IMediator _mediator;
+       
 
         public UpdateController( IMediator mediator) 
         {
            
             _mediator = mediator;
+            
         }
-        [HttpPut]
-        public async Task<IActionResult> Update( UpdateUserDto userRequest)
+        [HttpPut , Authorize]
+        public async Task<IActionResult> Update( )
         {
            
             BaseCommonResponse response = new BaseCommonResponse();
-            Guid id = GetUserId();
+
+            var claimsId = User.FindFirst("Id") ?? new("Id", Guid.Empty.ToString());
+            var ay = Request.Cookies["AccessToken"];
+            Guid id = new(claimsId.Value);
             Unit unit = await _mediator.Send(new UpdateUserRequest { });
             response.Response = "User Updated Successfully";
             return Ok(response);
         }
+       
 
     }
 }

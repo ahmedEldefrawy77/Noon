@@ -41,7 +41,8 @@ namespace Noon.Infrastructure.AuthServices
             IMapper mapper,
             IUserRepository userRepository,
             RefreshTokenValidator refreshTokenValidator,
-            IRefreshTokenRepository refreshTokenRepository) : base(context)
+            IRefreshTokenRepository refreshTokenRepository
+            ) : base(context)
         {
             _jwtProvider = jwtProvider;
             _refreshOptions = refreshOptions.Value;
@@ -65,20 +66,23 @@ namespace Noon.Infrastructure.AuthServices
             };
             return token;
         }
-        private RefreshToken GenerateRefreshToken(Guid Userid = default(Guid),
-       Guid id = default(Guid))
+        private RefreshToken GenerateRefreshToken(Guid userId = default(Guid)
+      , Guid id = default(Guid))
         {
-            string tokenValue = _jwtProvider.GetRefreshtoken();
-            RefreshToken token = new()
+            string refreshToken = _jwtProvider.GetRefreshtoken();
+
+            RefreshToken newRefreshToken = new()
             {
+                Id = id,
+                Value = refreshToken,
                 CreatedAt = DateTime.UtcNow,
                 ExpiredAt = DateTime.UtcNow.AddMonths(_refreshOptions.ExpireTimeInMonths),
-                Id = id,
-                UserId = Userid,
-                Value = tokenValue
+                UserId = userId
             };
-            return token;
+
+            return newRefreshToken;
         }
+        
         #endregion
         public async Task<BaseCommonResponse> Login(UserLoginRequest userRequest)
         {
@@ -140,14 +144,15 @@ namespace Noon.Infrastructure.AuthServices
 
             if(response.ResponseNumber == 200)
             {
-                Token token = GenerateToken(user, user.RefreshToken);
+                Token token = GenerateToken(response.Response, user.RefreshToken);
                 response.Token = token;
             }
             else
             {
+                
                 return response;
             }
-
+            
             return response;
         }
 
