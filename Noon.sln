@@ -18,8 +18,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Noon.Infrastructure", "Noon.Infrastructure\Noon.Infrastructure.csproj", "{6B85347C-A64D-4E18-A37D-9B5FEA5A7546}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{2246A19B-6CE3-417F-BF5C-D69477451BD1}"
+	ProjectSection(SolutionItems) = preProject
+		Noon.Infrastructure\InfrastructureServices.cs = Noon.Infrastructure\InfrastructureServices.cs
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Noon.Api", "Noon.Api\Noon.Api.csproj", "{5DBF50D5-CA2E-4BE0-BE63-E5D864870325}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Noon.Api", "Noon.Api\Noon.Api.csproj", "{5DBF50D5-CA2E-4BE0-BE63-E5D864870325}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

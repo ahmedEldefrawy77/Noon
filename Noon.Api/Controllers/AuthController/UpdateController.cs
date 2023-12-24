@@ -18,31 +18,20 @@ namespace Noon.Api.Controllers.AuthController
     [Route("api/[controller]")]
     [ApiController]
     public class UpdateController : BaseController<User>
-    {
-        
+    {    
         private readonly IMediator _mediator;
-       
-
-        public UpdateController( IMediator mediator) 
-        {
-           
-            _mediator = mediator;
+        public UpdateController( IMediator mediator) => _mediator = mediator;
             
-        }
         [HttpPut , Authorize]
-        public async Task<IActionResult> Update( )
+        public async Task<IActionResult> Update(UpdateUserDto request)
         {
            
-            BaseCommonResponse response = new BaseCommonResponse();
-
-            var claimsId = User.FindFirst("Id") ?? new("Id", Guid.Empty.ToString());
-            var ay = Request.Cookies["AccessToken"];
-            Guid id = new(claimsId.Value);
-            Unit unit = await _mediator.Send(new UpdateUserRequest { });
+            BaseCommonResponse response = new BaseCommonResponse( );
+            
+            response = await _mediator.Send(new UpdateUserRequest { UserRequest = request });
             response.Response = "User Updated Successfully";
             return Ok(response);
         }
-       
 
     }
 }

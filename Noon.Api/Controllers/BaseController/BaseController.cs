@@ -29,11 +29,6 @@ namespace Noon.Api.Controllers.BaseController
                    Expires = expireTime
                });
 
-
-
-        protected Guid GetUserId()
-          => new(User.FindFirst("Id")?.Value);
-
         //public virtual async Task<IActionResult> Get(Guid id)
         //{
         //    BaseCommonResponse response = new BaseCommonResponse();

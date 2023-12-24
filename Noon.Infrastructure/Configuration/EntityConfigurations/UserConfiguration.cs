@@ -31,7 +31,7 @@ namespace Noon.Infrastructure.Configuration.EntityConfigurations
 
             builder.HasOne(e => e.RefreshToken).WithOne(e => e.User).HasForeignKey<RefreshToken>(e => e.UserId);
 
-            builder.HasOne(e => e.WishList).WithOne(e => e.User).HasForeignKey<WishList>(e => e.UsertId);
+            builder.HasOne(e => e.WishList).WithOne(e => e.User).HasForeignKey<WishList>(e => e.WishListUserId);
             
         }
     }

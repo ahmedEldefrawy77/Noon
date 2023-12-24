@@ -12,7 +12,7 @@ namespace Noon.Infrastructure.Persistence.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
-        private readonly ApplicationDbContext _context;
+        protected readonly ApplicationDbContext _context;
         protected DbSet<T> _dbSet;
         protected DbSet<IEnumerable<T>> _entitiesDbSet;
         public GenericRepository(ApplicationDbContext context)
@@ -55,7 +55,6 @@ namespace Noon.Infrastructure.Persistence.Repositories
            return await _context.Set<T>().FindAsync(id);
            
         }
-
         public async Task UpdateAsync(T entity)
         {
             try
@@ -65,21 +64,8 @@ namespace Noon.Infrastructure.Persistence.Repositories
             }
             catch(Exception ex)
             {
-                Console.WriteLine(ex.InnerException.ToString());
-            }
-                       
+                Console.WriteLine(ex.ToString());
+            }           
         }
-        protected Guid GetUserIdFromClaims(HttpContext? context)
-        {
-
-            if (context == null)
-                throw new InvalidOperationException("This operation requires an active HTTP context.");
-
-            var claimsId = context.User.FindFirst("Id") ?? new("Id", Guid.Empty.ToString());
-
-            return new(claimsId.Value);
-        }
-
-
     }
 }

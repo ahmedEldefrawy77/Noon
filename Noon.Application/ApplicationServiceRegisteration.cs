@@ -20,6 +20,7 @@ namespace Noon.Application
             services.ConfigureOptions<AccessOptionSetup>();
             services.ConfigureOptions<BearerOptionSetup>();
             services.ConfigureOptions<RefreshOptionSetup>();
+            services.AddHttpContextAccessor();
             return services;
         }
     }

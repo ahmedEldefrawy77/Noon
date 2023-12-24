@@ -11,12 +11,10 @@ namespace Noon.Infrastructure.Persistence.Repositories
 {
     public class UserRepository : GenericRepository<User> , IUserRepository
     {
-        private readonly ApplicationDbContext _context;
+        
 
-        public UserRepository(ApplicationDbContext context) :base(context) 
-        {
-            _context = context;
-        }
+        public UserRepository(ApplicationDbContext context) :base(context) { }
+        
 
         public async Task<IReadOnlyCollection<User>> GetAllUsersAsync() => await GetAllAsync();
        

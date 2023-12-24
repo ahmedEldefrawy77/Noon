@@ -27,7 +27,7 @@ namespace Noon.Api.Controllers.AuthController
         public async Task<IActionResult> Post(CreateUserDto userRequest)
         {
             BaseCommonResponse response = await _mediator.Send(new RegisterUserRequest { UserRequest = userRequest });
-            if(response.Token != null)
+            if (response.Token != null && response.Token.AccessToken != null && response.Token.RefreshToken != null)
             {
                 SetCookie("AccessToken",
                 response.Token.AccessToken,

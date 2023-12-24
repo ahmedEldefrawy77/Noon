@@ -1,0 +1,27 @@
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Noon.Application.Features.CategoryFeatures.Requests.Commands;
+using Noon.Application.Responses;
+
+namespace Noon.Api.Controllers.AdminController
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CategoryController : ControllerBase
+    {
+        private readonly IMediator _mediator;
+
+        public CategoryController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateCategory(string categoryName)
+        {
+            BaseCommonResponse response = new BaseCommonResponse();
+           response =  await _mediator.Send(new CreateCategoryRequest { Name = categoryName });
+            return Ok(response);
+        }
+    }
+}

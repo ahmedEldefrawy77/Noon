@@ -20,6 +20,7 @@ using Noon.Application.Exceptions;
 using Noon.Infrastructure.Persistence.Repositories;
 using Microsoft.Extensions.Options;
 using Noon.Domain.Persistence.IRepository;
+using Noon.Application.Contracts.Persistence.UnitOfWork;
 
 namespace Noon.Infrastructure.AuthServices
 {
@@ -30,7 +31,7 @@ namespace Noon.Infrastructure.AuthServices
         private readonly AccessOptions _accessOptions;
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
-        private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly RefreshTokenValidator _refreshTokenValidator;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
 
@@ -39,17 +40,16 @@ namespace Noon.Infrastructure.AuthServices
             IOptions<AccessOptions> accessOptions,
             IMediator mediator,
             IMapper mapper,
-            IUserRepository userRepository,
+            IUnitOfWork unitOfWork,
             RefreshTokenValidator refreshTokenValidator,
-            IRefreshTokenRepository refreshTokenRepository
-            ) : base(context)
+            IRefreshTokenRepository refreshTokenRepository) : base(context)
         {
             _jwtProvider = jwtProvider;
             _refreshOptions = refreshOptions.Value;
             _accessOptions = accessOptions.Value;
             _mediator = mediator;
             _mapper = mapper;
-            _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
             _refreshTokenValidator = refreshTokenValidator;
             _refreshTokenRepository = refreshTokenRepository;
         }
@@ -89,7 +89,7 @@ namespace Noon.Infrastructure.AuthServices
             
 
             BaseCommonResponse response = new BaseCommonResponse();
-            User? userFromDb = await _userRepository.GetUserWithEmail(userRequest.Email);
+            User? userFromDb = await _unitOfWork.UserRepository.GetUserWithEmail(userRequest.Email);
             if (userFromDb == null)
             {
                 NotFoundException ex = new ("User" ,  userRequest.Email);
@@ -112,7 +112,7 @@ namespace Noon.Infrastructure.AuthServices
             {
                 userFromDb.RefreshToken = GenerateRefreshToken(userFromDb.Id);
 
-                await _userRepository.UpdateAsync(userFromDb);
+                await _unitOfWork.UserRepository.UpdateAsync(userFromDb);
 
             }
 
@@ -120,7 +120,7 @@ namespace Noon.Infrastructure.AuthServices
             {
                 userFromDb.RefreshToken = GenerateRefreshToken(userFromDb.Id);
 
-               await _userRepository.UpdateAsync(userFromDb);
+                await _unitOfWork.UserRepository.UpdateAsync(userFromDb);
  
             }
             Token token = GenerateToken(userFromDb, userFromDb.RefreshToken);
@@ -149,10 +149,9 @@ namespace Noon.Infrastructure.AuthServices
             }
             else
             {
-                
                 return response;
             }
-            
+
             return response;
         }
 
@@ -163,7 +162,7 @@ namespace Noon.Infrastructure.AuthServices
             if (refreshToken == null || refreshToken == string.Empty)
                 throw new ArgumentException("Invalid Token");
 
-            User? userFromDb = await _userRepository.GetUserByToken(refreshToken);
+            User? userFromDb = await _unitOfWork.UserRepository.GetUserByToken(refreshToken);
             if (userFromDb == null || !_refreshTokenValidator.Validate(refreshToken))
             {
 
@@ -183,26 +182,18 @@ namespace Noon.Infrastructure.AuthServices
            
         }
 
-        public async Task<BaseCommonResponse> Update(UpdateUserDto request, Guid id)
+        public async Task<BaseCommonResponse> Update(User user)
         {
             BaseCommonResponse response = new BaseCommonResponse();
-            User? userFromDb = await _userRepository.GetUserByIdAsync(id);
-            if (userFromDb == null)
-                throw new ArgumentNullException(nameof(request), "Invalid Token");
 
-            if (request == null)
-                throw new ArgumentNullException(nameof(request));
-
-           Unit unit =  await _mediator.Send(new UpdateUserRequest { UserRequest = request ,Id = id});
-
+            await _unitOfWork.UserRepository.UpdateAsync(user);
             response.Status = true;
             response.ResponseNumber =200;
-            response.Response = unit;
 
             return response;
         }
 
-        public async Task<BaseCommonResponse> UpdatePassword(PasswordRecord password, Guid id)
+        public  Task<BaseCommonResponse> UpdatePassword(PasswordRecord password, Guid id)
         {
             throw new NotImplementedException();
         }

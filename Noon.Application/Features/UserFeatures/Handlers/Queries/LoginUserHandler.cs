@@ -22,7 +22,8 @@ namespace Noon.Application.Features.UserFeatures.Handlers.Queries
         public async Task<BaseCommonResponse> Handle(LoginUserRequest request, CancellationToken cancellationToken)
         {
             BaseCommonResponse response = new BaseCommonResponse();
-            if(request.userRequest.Email == string.Empty || request.userRequest?.Password ==null)
+
+            if (request == null || request.userRequest == null || string.IsNullOrEmpty(request.userRequest.Email) || request.userRequest.Password == null)
             {
                 response.Status = false;
                 response.ResponseNumber = 500;

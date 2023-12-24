@@ -17,7 +17,7 @@ namespace Noon.Application.Contracts.Identity
         Task<BaseCommonResponse> Login(UserLoginRequest userRequest);
         Task<BaseCommonResponse> Register(CreateUserDto  createUserDto);
         Task<BaseCommonResponse> Logout(string refreshToken);
-        Task<BaseCommonResponse> Update(UpdateUserDto userRequest, Guid id);
+        Task<BaseCommonResponse> Update(User user);
         Task<BaseCommonResponse> UpdatePassword(PasswordRecord password, Guid id);
         Task<BaseCommonResponse> GetUserByToken(string token);
 

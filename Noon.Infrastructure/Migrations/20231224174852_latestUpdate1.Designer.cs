@@ -12,22 +12,27 @@ using Noon.Infrastructure;
 namespace Noon.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231217160109_First")]
-    partial class First
+    [Migration("20231224174852_latestUpdate1")]
+    partial class latestUpdate1
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.25")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("Noon.Domain.Entities.Address", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasMaxLength(128)
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AddressUserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("City")
@@ -46,53 +51,102 @@ namespace Noon.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AddressUserId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Address");
                 });
 
-            modelBuilder.Entity("Noon.Domain.Entities.Brand", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Brand");
-                });
-
             modelBuilder.Entity("Noon.Domain.Entities.Order", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasMaxLength(128)
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("DateOrderdAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("OrderUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("TotalPrice")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderUserId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("Noon.Domain.Entities.Products.Brand", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(128)
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("UserId")
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Brands");
+                });
+
+            modelBuilder.Entity("Noon.Domain.Entities.Products.Category", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(128)
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("Noon.Domain.Entities.Products.Money", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("VARCHAR(3)");
+
+                    b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ProductId")
+                        .IsUnique();
 
-                    b.ToTable("Order");
+                    b.ToTable("Moneys");
                 });
 
             modelBuilder.Entity("Noon.Domain.Entities.Products.Product", b =>
@@ -105,9 +159,6 @@ namespace Noon.Infrastructure.Migrations
                     b.Property<Guid>("BrandId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -116,51 +167,80 @@ namespace Noon.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("SpecifiedCategoryId")
+                    b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Specifications")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("SpecifiedCategoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal?>("TotalPriceAfterTax")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid?>("WishListId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BrandId");
 
+                    b.HasIndex("OrderId");
+
                     b.HasIndex("SpecifiedCategoryId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("WishListId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("Noon.Domain.Entities.Products.SpecifiedCategory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(128)
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("SpecifiedCategories");
                 });
 
             modelBuilder.Entity("Noon.Domain.Entities.Return", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasMaxLength(128)
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("UserId")
+                    b.Property<Guid>("ReturnUserId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ReturnUserId");
 
                     b.ToTable("Return");
-                });
-
-            modelBuilder.Entity("Noon.Domain.Entities.SpecifiedCategory", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SpecifiedCategory");
                 });
 
             modelBuilder.Entity("Noon.Domain.Entities.Tokens.RefreshToken", b =>
@@ -239,56 +319,121 @@ namespace Noon.Infrastructure.Migrations
                     b.ToTable("User");
                 });
 
+            modelBuilder.Entity("Noon.Domain.Entities.WishList", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(128)
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("WishListUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WishListUserId")
+                        .IsUnique();
+
+                    b.ToTable("WishList");
+                });
+
             modelBuilder.Entity("Noon.Domain.Entities.Address", b =>
                 {
                     b.HasOne("Noon.Domain.Entities.User", "User")
-                        .WithMany("Address")
-                        .HasForeignKey("UserId")
+                        .WithMany()
+                        .HasForeignKey("AddressUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Noon.Domain.Entities.User", null)
+                        .WithMany("Address")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
 
             modelBuilder.Entity("Noon.Domain.Entities.Order", b =>
                 {
-                    b.HasOne("Noon.Domain.Entities.User", null)
+                    b.HasOne("Noon.Domain.Entities.User", "User")
                         .WithMany("Orders")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("OrderUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Noon.Domain.Entities.Products.Brand", b =>
+                {
+                    b.HasOne("Noon.Domain.Entities.Products.Category", "Category")
+                        .WithMany("Brands")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Noon.Domain.Entities.Products.Money", b =>
+                {
+                    b.HasOne("Noon.Domain.Entities.Products.Product", "Product")
+                        .WithOne("Price")
+                        .HasForeignKey("Noon.Domain.Entities.Products.Money", "ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Noon.Domain.Entities.Products.Product", b =>
                 {
-                    b.HasOne("Noon.Domain.Entities.Brand", "Brand")
+                    b.HasOne("Noon.Domain.Entities.Products.Brand", "Brand")
                         .WithMany("Products")
                         .HasForeignKey("BrandId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Noon.Domain.Entities.SpecifiedCategory", "SpecifiedCategory")
+                    b.HasOne("Noon.Domain.Entities.Order", "Order")
                         .WithMany("Products")
-                        .HasForeignKey("SpecifiedCategoryId")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Noon.Domain.Entities.User", "User")
+                    b.HasOne("Noon.Domain.Entities.Products.SpecifiedCategory", "SpecifiedCategory")
                         .WithMany("Products")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SpecifiedCategoryId");
+
+                    b.HasOne("Noon.Domain.Entities.WishList", null)
+                        .WithMany("Products")
+                        .HasForeignKey("WishListId");
 
                     b.Navigation("Brand");
 
-                    b.Navigation("SpecifiedCategory");
+                    b.Navigation("Order");
 
-                    b.Navigation("User");
+                    b.Navigation("SpecifiedCategory");
+                });
+
+            modelBuilder.Entity("Noon.Domain.Entities.Products.SpecifiedCategory", b =>
+                {
+                    b.HasOne("Noon.Domain.Entities.Products.Category", "Category")
+                        .WithMany("SpecifiedCategories")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("Noon.Domain.Entities.Return", b =>
                 {
-                    b.HasOne("Noon.Domain.Entities.User", null)
+                    b.HasOne("Noon.Domain.Entities.User", "User")
                         .WithMany("Returns")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("ReturnUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Noon.Domain.Entities.Tokens.RefreshToken", b =>
@@ -302,12 +447,40 @@ namespace Noon.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Noon.Domain.Entities.Brand", b =>
+            modelBuilder.Entity("Noon.Domain.Entities.WishList", b =>
+                {
+                    b.HasOne("Noon.Domain.Entities.User", "User")
+                        .WithOne("WishList")
+                        .HasForeignKey("Noon.Domain.Entities.WishList", "WishListUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Noon.Domain.Entities.Order", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("Noon.Domain.Entities.SpecifiedCategory", b =>
+            modelBuilder.Entity("Noon.Domain.Entities.Products.Brand", b =>
+                {
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Noon.Domain.Entities.Products.Category", b =>
+                {
+                    b.Navigation("Brands");
+
+                    b.Navigation("SpecifiedCategories");
+                });
+
+            modelBuilder.Entity("Noon.Domain.Entities.Products.Product", b =>
+                {
+                    b.Navigation("Price");
+                });
+
+            modelBuilder.Entity("Noon.Domain.Entities.Products.SpecifiedCategory", b =>
                 {
                     b.Navigation("Products");
                 });
@@ -318,12 +491,17 @@ namespace Noon.Infrastructure.Migrations
 
                     b.Navigation("Orders");
 
-                    b.Navigation("Products");
-
                     b.Navigation("RefreshToken")
                         .IsRequired();
 
                     b.Navigation("Returns");
+
+                    b.Navigation("WishList");
+                });
+
+            modelBuilder.Entity("Noon.Domain.Entities.WishList", b =>
+                {
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

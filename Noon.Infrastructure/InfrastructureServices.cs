@@ -48,6 +48,7 @@ namespace Noon.Infrastructure
             services.AddTransient<IValidator<IUserDto>, IUserValidator>();
 
             services.AddSingleton<IJwtProvider, JwtProvider>();
+          
             return services;
         }
     }

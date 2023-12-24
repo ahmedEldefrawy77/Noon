@@ -10,7 +10,7 @@ namespace Noon.Domain.Entities
     public class Return : BaseEntity
     {
         public User? User { get; set; }
-        public Guid UserId { get; set; }
+        public Guid ReturnUserId { get; set; }
         public bool Status { get; set; }
     }
 }

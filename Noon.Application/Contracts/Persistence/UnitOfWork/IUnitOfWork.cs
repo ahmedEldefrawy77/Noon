@@ -1,4 +1,5 @@
 ﻿using Noon.Application.Contracts.Persistence.IRepository;
+using Noon.Domain.Persistence.IRepository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,8 @@ namespace Noon.Application.Contracts.Persistence.UnitOfWork
     public interface IUnitOfWork : IDisposable
     {
         IUserRepository UserRepository { get; }
-       
+        IProductRepository ProductRepostiory {  get; }
+        IBrandRepository BrandRepository { get; }
+        ICategoryRepository CategoryRepository { get; }
     }
 }

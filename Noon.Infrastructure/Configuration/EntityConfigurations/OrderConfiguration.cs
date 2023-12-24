@@ -11,15 +11,14 @@ namespace Noon.Infrastructure.Configuration.EntityConfigurations
 {
     public class OrderConfiguration : BaseConfiguration<Order>
     {
-        public OrderConfiguration(EntityTypeBuilder<Order> builder) 
-        {
+       public override void Configure(EntityTypeBuilder<Order> builder) { 
             base.Configure(builder);
 
-            builder.HasOne(e => e.User).WithMany().HasForeignKey(e => e.UserId);
+            builder.HasOne(e => e.User).WithMany(e=>e.Orders).HasForeignKey(e => e.OrderUserId);
 
             builder.Property(e => e.TotalPrice).IsRequired();
 
-            builder.HasOne(e=>e.User).WithMany().HasForeignKey(e => e.UserId);
+            
         }
     }
 }

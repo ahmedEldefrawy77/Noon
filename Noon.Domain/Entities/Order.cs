@@ -8,11 +8,14 @@ using System.Threading.Tasks;
 
 namespace Noon.Domain.Entities
 {
-    public class Order : BaseEntitySetting
+    public class Order : BaseEntity
     {
         public User? User {  get; set; }
-        public Guid UserId {  get; set; } 
+        public Guid OrderUserId {  get; set; } 
         public ICollection<Product>? Products { get; set; }
         public double TotalPrice { get; set; }
+        public DateTime DateOrderdAt { get; set; }  
+      
+        
     }
 }

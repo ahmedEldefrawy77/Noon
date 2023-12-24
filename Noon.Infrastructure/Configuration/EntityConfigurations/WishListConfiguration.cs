@@ -11,10 +11,10 @@ namespace Noon.Infrastructure.Configuration.EntityConfigurations
 {
     public class WishListConfiguration : BaseConfiguration<WishList>
     {
-        public WishListConfiguration(EntityTypeBuilder<WishList> builder) 
+        public override void Configure(EntityTypeBuilder<WishList> builder)
         {
             base.Configure(builder);
-            builder.HasOne(e => e.User).WithOne().HasForeignKey<WishList>(e => e.UsertId);
+            builder.HasOne(e => e.User).WithOne(e=>e.WishList).HasForeignKey<WishList>(e => e.WishListUserId);
         }
     }
 }

@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Noon.Application.Features.UserFeatures.Requests.Commands
 {
-    public class UpdateUserRequest : IRequest<Unit>
+    public class UpdateUserRequest : IRequest<BaseCommonResponse>
     {
         public UpdateUserDto? UserRequest { get; set; }
-        public Guid Id { get; set; }    
+         
     }
 }

@@ -12,11 +12,11 @@ namespace Noon.Infrastructure.Configuration.EntityConfigurations
 {
     public class ReturnConfiguration : BaseConfiguration<Return>
     {
-        public ReturnConfiguration(EntityTypeBuilder<Return> builder)
+        public override void Configure(EntityTypeBuilder<Return> builder)
         {
             base.Configure(builder);
 
-            builder.HasOne(e=>e.User).WithMany().HasForeignKey(e=>e.UserId);
+            builder.HasOne(e=>e.User).WithMany(e=>e.Returns).HasForeignKey(e=>e.ReturnUserId);
 
             builder.Property(e=>e.Status).HasDefaultValue(false);
         }
