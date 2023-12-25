@@ -15,9 +15,9 @@ namespace Noon.Infrastructure.Configuration.EntityConfigurations
             base.Configure(builder);
 
             builder.HasOne(e => e.User).WithMany(e=>e.Orders).HasForeignKey(e => e.OrderUserId);
-
-            builder.Property(e => e.TotalPrice).IsRequired();
-
+            builder.Property(e => e.TotalPrice).IsRequired().HasPrecision(18,2);
+            builder.Property(e => e.TotalPriceAfterTax).IsRequired().HasPrecision(18, 2);
+            builder.Property(e => e.DateOrderdAt).IsRequired();
             
         }
     }

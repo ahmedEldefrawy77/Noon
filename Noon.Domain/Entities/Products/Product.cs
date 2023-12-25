@@ -20,9 +20,8 @@ namespace Noon.Domain.Entities.Products
         public Brand? Brand { get; set; }
         public Guid BrandId { get; set; }
         public int Quantity { get; set; } = 0;
-        public Order? Order { get; set; }
-        public Guid OrderId { get; set; }
-        public decimal? TotalPriceAfterTax { get; set; }
+        public ICollection<OrderProduct>? OrdersProducts { get; set; }
+       
         [NotMapped] // Exclude from database mapping
         public Dictionary<string, string> Specifications { get; set; } = new Dictionary<string, string>();
        

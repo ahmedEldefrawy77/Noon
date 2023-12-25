@@ -10,6 +10,6 @@ namespace Noon.Domain.Persistence.IRepository
 {
     public interface ISpecifiedCategoryRepository : IGenericRepository<SpecifiedCategory>
     {
-        Task<IEnumerable<Brand>> GetSpecifiedCategoryByName(string name);
+        Task<SpecifiedCategory?> GetSpecifiedCategoryByName(string name);
     }
 }

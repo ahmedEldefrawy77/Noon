@@ -14,11 +14,11 @@ namespace Noon.Infrastructure.Persistence.Repositories
         public BrandRepository(ApplicationDbContext context) : base(context) { }
         
 
-        public async  Task<IEnumerable<Brand>> GetBrandByName(string name)
+        public async  Task<Brand?> GetBrandByName(string name)
         {
-            IEnumerable<Brand> list = new List<Brand>();
+           Brand? brand = new Brand();
 
-            return list = await Task.Run(() => _dbSet.Where(e => e.Name == name).ToListAsync());
+            return brand = await  _dbSet.FirstOrDefaultAsync(e => e.Name == name);
             
         }
     }

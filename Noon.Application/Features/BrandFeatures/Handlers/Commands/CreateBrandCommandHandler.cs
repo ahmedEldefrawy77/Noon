@@ -33,7 +33,12 @@ namespace Noon.Application.Features.BrandFeatures.Handlers.Commands
 
                 return response;
             }
-
+            Brand? brandFromDb = await _unitOfWork.BrandRepository.GetBrandByName(request.CreateBrandRecord.BrandName);
+            if(brandFromDb != null)
+            {
+                response.Status = false;
+                response.Response = "Brand Name is already exists: choose another Name";
+            }
             Category? CategoryFromDb = await _unitOfWork.CategoryRepository.SearchCategoryByName(request.CreateBrandRecord.CategoryName);
             if(CategoryFromDb == null)
             {

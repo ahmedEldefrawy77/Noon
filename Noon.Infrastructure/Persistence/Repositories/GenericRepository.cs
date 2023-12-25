@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Noon.Application.Contracts.Persistence.IBaseRepository;
 using Noon.Domain.Common;
 using System;
@@ -15,17 +16,28 @@ namespace Noon.Infrastructure.Persistence.Repositories
         protected readonly ApplicationDbContext _context;
         protected DbSet<T> _dbSet;
         protected DbSet<IEnumerable<T>> _entitiesDbSet;
+        
         public GenericRepository(ApplicationDbContext context)
         {
             _dbSet = context.Set<T>();
             _entitiesDbSet = context.Set<IEnumerable<T>>();
             _context = context;
+            
         }
         public async Task<T> AddAsync(T entity)
         {
-           await _context.AddAsync(entity);
-            await _context.SaveChangesAsync();
-            return entity;
+            try
+            {
+                await _context.AddAsync(entity);
+                await _context.SaveChangesAsync();
+                return entity;
+            }
+             catch(Exception ex)
+            {
+                Console.WriteLine(ex.InnerException.ToString());
+                return entity;
+            }
+            
         }
 
         public async Task DeleteAsync(T entity)
@@ -64,7 +76,7 @@ namespace Noon.Infrastructure.Persistence.Repositories
             }
             catch(Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine(ex.InnerException.ToString());
             }           
         }
     }

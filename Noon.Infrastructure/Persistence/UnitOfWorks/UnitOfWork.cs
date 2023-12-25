@@ -18,6 +18,8 @@ namespace Noon.Infrastructure.Persistence.UOW
         private IProductRepository? _productRepository;
         private IBrandRepository?  _brandRepository;
         private ICategoryRepository? _categoryRepository;
+        private ISpecifiedCategoryRepository? _specifiedCategoryRepository;
+        private IMoneyRepository? _moneyRepository;
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
@@ -34,6 +36,12 @@ namespace Noon.Infrastructure.Persistence.UOW
 
         public ICategoryRepository CategoryRepository => 
             _categoryRepository ??= new CategoryRepository(_context);
+
+        public ISpecifiedCategoryRepository SpecificCategoryRepository 
+            => _specifiedCategoryRepository ??= new SpecifiedCategoryRepository(_context);
+
+        public IMoneyRepository MoneyRepository 
+            => _moneyRepository ??= new MoneyRepository(_context);
 
         public void Dispose()
         {

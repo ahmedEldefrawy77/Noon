@@ -20,8 +20,7 @@ namespace Noon.Api.Controllers.AdminController
         public async Task<IActionResult> CreateCategory(string categoryName)
         {
             BaseCommonResponse response = new BaseCommonResponse();
-           response =  await _mediator.Send(new CreateCategoryRequest { Name = categoryName });
-            return Ok(response);
+            return Ok(response = await _mediator.Send(new CreateCategoryRequest { Name = categoryName }));
         }
     }
 }

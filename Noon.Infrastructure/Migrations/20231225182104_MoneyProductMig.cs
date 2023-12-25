@@ -1,29 +1,30 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Noon.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class ProductUpdate : Migration
+    public partial class MoneyProductMig : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "SpecificationsJson",
+                name: "MoneyId",
                 table: "Products");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "SpecificationsJson",
+            migrationBuilder.AddColumn<Guid>(
+                name: "MoneyId",
                 table: "Products",
-                type: "nvarchar(max)",
+                type: "uniqueidentifier",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
         }
     }
 }

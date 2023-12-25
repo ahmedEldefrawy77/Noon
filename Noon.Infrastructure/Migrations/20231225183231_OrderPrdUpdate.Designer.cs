@@ -12,8 +12,8 @@ using Noon.Infrastructure;
 namespace Noon.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231224153147_FullMigration")]
-    partial class FullMigration
+    [Migration("20231225183231_OrderPrdUpdate")]
+    partial class OrderPrdUpdate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,19 +70,19 @@ namespace Noon.Infrastructure.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("DateOrderdAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("OrderUserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("TotalPrice")
-                        .HasColumnType("float");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("float(18)");
+
+                    b.Property<double>("TotalPriceAfterTax")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("float(18)");
 
                     b.HasKey("Id");
 
@@ -98,28 +98,18 @@ namespace Noon.Infrastructure.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Brands");
-                });
-
-            modelBuilder.Entity("Noon.Domain.Entities.Products.BrandCategory", b =>
-                {
-                    b.Property<Guid>("BrandId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("BrandId", "CategoryId");
-
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("BrandCategory");
+                    b.ToTable("Brands");
                 });
 
             modelBuilder.Entity("Noon.Domain.Entities.Products.Category", b =>
@@ -151,7 +141,7 @@ namespace Noon.Infrastructure.Migrations
                     b.Property<string>("Currency")
                         .IsRequired()
                         .HasMaxLength(3)
-                        .HasColumnType("VARCHAR(3)");
+                        .HasColumnType("nvarchar(3)");
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
@@ -189,10 +179,6 @@ namespace Noon.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Specifications")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SpecificationsJson")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -378,21 +364,13 @@ namespace Noon.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Noon.Domain.Entities.Products.BrandCategory", b =>
+            modelBuilder.Entity("Noon.Domain.Entities.Products.Brand", b =>
                 {
-                    b.HasOne("Noon.Domain.Entities.Products.Brand", "Brand")
-                        .WithMany("BrandCategories")
-                        .HasForeignKey("BrandId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Noon.Domain.Entities.Products.Category", "Category")
-                        .WithMany("BrandCategories")
+                        .WithMany("Brands")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Brand");
 
                     b.Navigation("Category");
                 });
@@ -488,14 +466,12 @@ namespace Noon.Infrastructure.Migrations
 
             modelBuilder.Entity("Noon.Domain.Entities.Products.Brand", b =>
                 {
-                    b.Navigation("BrandCategories");
-
                     b.Navigation("Products");
                 });
 
             modelBuilder.Entity("Noon.Domain.Entities.Products.Category", b =>
                 {
-                    b.Navigation("BrandCategories");
+                    b.Navigation("Brands");
 
                     b.Navigation("SpecifiedCategories");
                 });

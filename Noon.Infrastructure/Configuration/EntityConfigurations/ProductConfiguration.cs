@@ -23,8 +23,6 @@ namespace Noon.Infrastructure.Configuration.EntityConfigurations
 
             builder.HasOne(e=>e.Brand).WithMany(e=>e.Products).HasForeignKey(e=>e.BrandId);
 
-            builder.Property(e => e.TotalPriceAfterTax).HasPrecision(18, 2);
-
             builder.Property(e => e.Specifications).HasConversion(
                 v => JsonConvert.SerializeObject(v),
                 v => JsonConvert.DeserializeObject<Dictionary<string, string>>(v) ?? new Dictionary<string, string>())

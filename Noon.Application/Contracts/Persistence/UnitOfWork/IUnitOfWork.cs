@@ -14,5 +14,7 @@ namespace Noon.Application.Contracts.Persistence.UnitOfWork
         IProductRepository ProductRepostiory {  get; }
         IBrandRepository BrandRepository { get; }
         ICategoryRepository CategoryRepository { get; }
+        ISpecifiedCategoryRepository SpecificCategoryRepository { get; }
+        IMoneyRepository MoneyRepository { get; }
     }
 }

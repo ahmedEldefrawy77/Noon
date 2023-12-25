@@ -16,7 +16,7 @@ namespace Noon.Infrastructure.Configuration.EntityConfigurations
            builder.HasKey(x => x.Id);
             builder.HasOne(e=>e.Product).WithOne(e=>e.Price).HasForeignKey<Money>(e => e.ProductId);
             builder.Property(e=>e.Amount).IsRequired().HasPrecision(18,2);
-            builder.Property(e=>e.Currency).IsRequired().HasMaxLength(3).HasColumnType("VARCHAR(3)");
+            builder.Property(e=>e.Currency).IsRequired().HasMaxLength(3);
         }
     }
 }

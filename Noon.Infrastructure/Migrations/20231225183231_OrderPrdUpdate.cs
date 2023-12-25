@@ -5,7 +5,7 @@
 namespace Noon.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class latestUpdate1 : Migration
+    public partial class OrderPrdUpdate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

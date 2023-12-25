@@ -12,8 +12,8 @@ using Noon.Infrastructure;
 namespace Noon.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231224174852_latestUpdate1")]
-    partial class latestUpdate1
+    [Migration("20231225161046_PrdUpdate")]
+    partial class PrdUpdate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -77,7 +77,12 @@ namespace Noon.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("TotalPrice")
-                        .HasColumnType("float");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("float(18)");
+
+                    b.Property<double>("TotalPriceAfterTax")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("float(18)");
 
                     b.HasKey("Id");
 
@@ -136,7 +141,7 @@ namespace Noon.Infrastructure.Migrations
                     b.Property<string>("Currency")
                         .IsRequired()
                         .HasMaxLength(3)
-                        .HasColumnType("VARCHAR(3)");
+                        .HasColumnType("nvarchar(3)");
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
@@ -163,6 +168,9 @@ namespace Noon.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("MoneyId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -179,10 +187,6 @@ namespace Noon.Infrastructure.Migrations
 
                     b.Property<Guid?>("SpecifiedCategoryId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal?>("TotalPriceAfterTax")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid?>("WishListId")
                         .HasColumnType("uniqueidentifier");

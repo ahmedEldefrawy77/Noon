@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 
 namespace Noon.Domain.Entities.Products
 {
-    public class Money : BaseEntity
+    public class OrderProduct 
     {
-        
-        public Product? Product { get; set; }
+        public Order? Orders { get; set; }
+        public Guid OrderId { get; set; }
+        public Product? Products { get; set; }
         public Guid ProductId { get; set; }
-        public decimal Amount { get; set; }
-        public string Currency { get; set; } = string.Empty;
     }
 }

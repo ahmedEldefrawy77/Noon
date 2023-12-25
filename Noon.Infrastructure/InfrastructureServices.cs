@@ -13,6 +13,7 @@ using Noon.Domain.Persistence.IBaseRepository;
 using Noon.Domain.Persistence.IRepository;
 using Noon.Infrastructure.AuthServices;
 using Noon.Infrastructure.IdentityProvider;
+using Noon.Infrastructure.Middleware;
 using Noon.Infrastructure.Persistence.Repositories;
 using Noon.Infrastructure.Persistence.UOW;
 using System;
@@ -48,7 +49,11 @@ namespace Noon.Infrastructure
             services.AddTransient<IValidator<IUserDto>, IUserValidator>();
 
             services.AddSingleton<IJwtProvider, JwtProvider>();
-          
+
+            services.AddTransient<GlobalErrorHandlerMiddleware>();
+            services.AddTransient<TransactionMiddleware>();
+
+
             return services;
         }
     }

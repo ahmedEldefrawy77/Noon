@@ -12,10 +12,11 @@ namespace Noon.Domain.Entities
     {
         public User? User {  get; set; }
         public Guid OrderUserId {  get; set; } 
-        public ICollection<Product>? Products { get; set; }
-        public double TotalPrice { get; set; }
-        public DateTime DateOrderdAt { get; set; }  
-      
         
+        public double TotalPrice { get; set; }
+        public double TotalPriceAfterTax { get; set; }
+        public DateTime DateOrderdAt { get; set; }
+
+        public ICollection<OrderProduct>? OrdersProducts { get; set; }
     }
 }

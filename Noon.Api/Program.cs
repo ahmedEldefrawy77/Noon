@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Noon.Infrastructure;
 using Noon.Application;
+using Noon.Infrastructure.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,8 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.UseMiddleware<GlobalErrorHandlerMiddleware>();
+app.UseMiddleware<TransactionMiddleware>();
 
 app.MapControllers();
 

@@ -6,23 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Noon.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class FullMigration : Migration
+    public partial class Spec : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Brands",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", maxLength: 128, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Brands", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
@@ -55,23 +43,18 @@ namespace Noon.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BrandCategory",
+                name: "Brands",
                 columns: table => new
                 {
-                    BrandId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", maxLength: 128, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BrandCategory", x => new { x.BrandId, x.CategoryId });
+                    table.PrimaryKey("PK_Brands", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BrandCategory_Brands_BrandId",
-                        column: x => x.BrandId,
-                        principalTable: "Brands",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_BrandCategory_Categories_CategoryId",
+                        name: "FK_Brands_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
@@ -132,8 +115,7 @@ namespace Noon.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", maxLength: 128, nullable: false),
                     OrderUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TotalPrice = table.Column<double>(type: "float", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    DateOrderdAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -213,8 +195,8 @@ namespace Noon.Infrastructure.Migrations
                     BrandId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TotalPriceAfterTax = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
                     Specifications = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SpecificationsJson = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     WishListId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -277,8 +259,8 @@ namespace Noon.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BrandCategory_CategoryId",
-                table: "BrandCategory",
+                name: "IX_Brands_CategoryId",
+                table: "Brands",
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
@@ -340,9 +322,6 @@ namespace Noon.Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Address");
-
-            migrationBuilder.DropTable(
-                name: "BrandCategory");
 
             migrationBuilder.DropTable(
                 name: "Moneys");

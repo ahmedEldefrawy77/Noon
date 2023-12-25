@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Noon.Application.DTOs.MoneyDtos;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +8,12 @@ using System.Threading.Tasks;
 
 namespace Noon.Application.DTOs.ProductDto
 {
-    internal class ProductDto
+    public class ProductDto
     {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public MoneyDto? Price { get; set; }
+        public int Quantity { get; set; }
     }
 }

@@ -12,10 +12,10 @@
     <Folder Include="Features\BrandFeatures\Requests\Queries\" />
     <Folder Include="Features\CategoryFeatures\Handlers\Queries\" />
     <Folder Include="Features\CategoryFeatures\Requests\Queries\" />
-    <Folder Include="Features\ProductFeatures\Handler\Commands\" />
     <Folder Include="Features\ProductFeatures\Handler\Queries\" />
-    <Folder Include="Features\ProductFeatures\Request\Commands\" />
     <Folder Include="Features\ProductFeatures\Request\Queries\" />
+    <Folder Include="Features\SpecifiedCategoryFeatures\Handlers\Queries\" />
+    <Folder Include="Features\SpecifiedCategoryFeatures\Requests\Queries\" />
   </ItemGroup>
 
   <ItemGroup>
