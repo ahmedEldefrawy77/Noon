@@ -12,6 +12,7 @@ namespace Noon.Domain.Persistence.IRepository
     public interface IBrandRepository : IGenericRepository<Brand>
     {
         Task<Brand?> GetBrandByName(string name);
+        Task<Guid> GetBrandByIdByName(string brandName);
        
     }
 }

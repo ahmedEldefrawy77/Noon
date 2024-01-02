@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Noon.Infrastructure.DictionaryComparer;
+using Microsoft.EntityFrameworkCore;
 
 namespace Noon.Infrastructure.Configuration.EntityConfigurations
 {
@@ -22,6 +23,7 @@ namespace Noon.Infrastructure.Configuration.EntityConfigurations
             builder.HasOne(e => e.SpecifiedCategory).WithMany(e=>e.Products).HasForeignKey(e => e.SpecifiedCategoryId);
 
             builder.HasOne(e=>e.Brand).WithMany(e=>e.Products).HasForeignKey(e=>e.BrandId);
+            builder.HasOne(e => e.Category).WithMany(e => e.Products).HasForeignKey(e => e.CategoryId).OnDelete(DeleteBehavior.NoAction); 
 
             builder.Property(e => e.Specifications).HasConversion(
                 v => JsonConvert.SerializeObject(v),

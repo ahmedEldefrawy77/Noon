@@ -14,7 +14,9 @@ namespace Noon.Infrastructure.Configuration.EntityConfigurations
         public override void Configure(EntityTypeBuilder<WishList> builder)
         {
             base.Configure(builder);
-            builder.HasOne(e => e.User).WithOne(e=>e.WishList).HasForeignKey<WishList>(e => e.WishListUserId);
+            builder.Property(e => e.Name).IsRequired().HasMaxLength(50);
+            builder.HasOne(e => e.User).WithMany(e=>e.WishList).HasForeignKey(e => e.WishListUserId);
+            
         }
     }
 }

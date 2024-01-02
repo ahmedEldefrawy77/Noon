@@ -12,32 +12,62 @@ namespace Noon.Infrastructure.Persistence.Repositories
 {
     public class ProductRepository : BaseSettingRepository<Product>, IProductRepository
     {
-        public ProductRepository(ApplicationDbContext context) : base(context)
-        {
+        private readonly IBrandRepository _brandRepository;
+        private readonly ISpecifiedCategoryRepository _specRepository;
+        private readonly ICategoryRepository _categoryRepository;
 
+        public ProductRepository(ApplicationDbContext context,
+            IBrandRepository brandRepository,ISpecifiedCategoryRepository specRepository,
+            ICategoryRepository categoryRepository) : base(context)
+        {
+           _brandRepository = brandRepository;
+            _specRepository = specRepository;
+            _categoryRepository = categoryRepository;
         }
 
-        public  Task<IReadOnlyList<Product>> GetProductByBrand(string brandName)
+        public  async Task<IReadOnlyList<Product>> GetAllProductsByCategoryName(string Name)
         {
-          // List<Product> list = new List<Product>();
-          //  IReadOnlyList<Product> myList = list.AsReadOnly();
+            List<Product> list = new List<Product>();
+            IReadOnlyList<Product> myList = list.AsReadOnly();
 
 
-          //  Guid brandId = _context.Brands
-          //      .Where(e=> e.Name == brandName)
-          //      .Select(e=>e.Id)
-          //      .FirstOrDefault();
-          //  if(brandId == Guid.Empty)
-          //  {
-          //      return myList;
-          //  }
+            Guid categoryId = await _categoryRepository.GetCategoryIdByName(Name);
+            if (categoryId== Guid.Empty)
+            {
+                return myList;
+            }
 
-          ////List<Product> prdList = await  _context.Products
-          ////   .Where(product => product.BrandId == brandId).ToListAsync();
+            List<Product> AllProductForCategory = new List<Product>();
 
-          //  IReadOnlyList<Product> readOnlyProducts = prdList.AsReadOnly();
-          //  return readOnlyProducts;
-          throw new NotImplementedException();
+            List<Guid> specCategories = await _specRepository.GetAllSpecifiedCategoryIdsWithCategoryId(categoryId);
+
+            foreach(Guid specId in specCategories)
+            {
+               AllProductForCategory = await _dbSet.Where(e=>e.SpecifiedCategoryId ==  specId).ToListAsync();
+            }
+
+            IReadOnlyList<Product> readOnlyProducts = AllProductForCategory.AsReadOnly();
+            return readOnlyProducts;
+        }
+
+        public async  Task<IReadOnlyList<Product>> GetProductByBrand(string brandName)
+        {
+            List<Product> list = new List<Product>();
+            IReadOnlyList<Product> myList = list.AsReadOnly();
+
+
+            Guid brandId = await _brandRepository.GetBrandByIdByName(brandName);
+            if (brandId == Guid.Empty)
+            {
+                return myList;
+            }
+
+            List<Product> prdList = await _context.Products
+               .Where(product => product.BrandId == brandId).ToListAsync();
+
+            IReadOnlyList<Product> readOnlyProducts = prdList.AsReadOnly();
+            return readOnlyProducts;
+           
         }
 
         public async Task<IReadOnlyList<Product>> GetProductBySpecifiedCategory(string specifiedCategoryName)
@@ -46,10 +76,7 @@ namespace Noon.Infrastructure.Persistence.Repositories
             IReadOnlyList<Product> myList = list.AsReadOnly();
 
 
-            Guid scId = _context.SpecifiedCategories
-                .Where(e => e.Name == specifiedCategoryName)
-                .Select(e => e.Id)
-                .FirstOrDefault();
+            Guid scId = await _specRepository.GetSpecifiedCategoryIdByName(specifiedCategoryName);
             if (scId == Guid.Empty)
             {
                 return myList;
@@ -62,7 +89,7 @@ namespace Noon.Infrastructure.Persistence.Repositories
             return readOnlyProducts;
         }
 
-        public async Task<IReadOnlyList<Product>> GetProductsByPriceRange(string prdName, decimal minPrice, decimal maxPrice)
+        public async Task<IReadOnlyList<Product>> GetProductsByPriceRange(string prdName, decimal? minPrice, decimal? maxPrice)
         {
             List<Product> prdList = await _context.Products
                 .Where(e => e.Name == prdName && e.Price != null && e.Price.Amount >= minPrice && e.Price.Amount <= maxPrice)

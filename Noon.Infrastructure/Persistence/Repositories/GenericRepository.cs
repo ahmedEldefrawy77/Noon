@@ -26,17 +26,10 @@ namespace Noon.Infrastructure.Persistence.Repositories
         }
         public async Task<T> AddAsync(T entity)
         {
-            try
-            {
+           
                 await _context.AddAsync(entity);
                 await _context.SaveChangesAsync();
                 return entity;
-            }
-             catch(Exception ex)
-            {
-                Console.WriteLine(ex.InnerException.ToString());
-                return entity;
-            }
             
         }
 
@@ -69,15 +62,9 @@ namespace Noon.Infrastructure.Persistence.Repositories
         }
         public async Task UpdateAsync(T entity)
         {
-            try
-            {
-                await Task.Run(() => _context.Update(entity));
-                await _context.SaveChangesAsync();
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex.InnerException.ToString());
-            }           
+               _context.Update(entity);
+              await _context.SaveChangesAsync();
+                  
         }
     }
 }

@@ -28,6 +28,7 @@ namespace Noon.Application.Profiles
             CreateMap<RefreshToken, RefreshTokenDto>().ReverseMap();
             CreateMap<Product, ProductDto>().ReverseMap();
             CreateMap<Money,MoneyDto>().ReverseMap();
+            CreateMap<User, UserRegisterOutDto>().ReverseMap();  
         }
     }
 }

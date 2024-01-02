@@ -145,6 +145,8 @@ namespace Noon.Infrastructure.AuthServices
             if(response.ResponseNumber == 200)
             {
                 Token token = GenerateToken(response.Response, user.RefreshToken);
+                UserRegisterOutDto userOut = _mapper.Map<UserRegisterOutDto>(response.Response);
+                response.Response = userOut;
                 response.Token = token;
             }
             else

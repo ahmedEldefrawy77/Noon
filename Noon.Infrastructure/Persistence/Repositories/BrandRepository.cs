@@ -9,10 +9,15 @@ using System.Threading.Tasks;
 
 namespace Noon.Infrastructure.Persistence.Repositories
 {
-    public class BrandRepository : GenericRepository<Brand> , IBrandRepository
+    public class BrandRepository : GenericRepository<Brand>, IBrandRepository
     {
         public BrandRepository(ApplicationDbContext context) : base(context) { }
-        
+
+        public async Task<Guid> GetBrandByIdByName(string brandName)
+        {
+            Guid id = await _dbSet.Where(e=>e.Name == brandName).Select(e=>e.Id).FirstOrDefaultAsync();
+            return id;
+        }
 
         public async  Task<Brand?> GetBrandByName(string name)
         {

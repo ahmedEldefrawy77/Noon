@@ -12,5 +12,6 @@ namespace Noon.Domain.Entities.Products
         public string Name { get; set; } = string.Empty;
         public ICollection<SpecifiedCategory>? SpecifiedCategories { get; set; }
         public ICollection<Brand>? Brands { get; set; }
+        public ICollection<Product>? Products { get; set; }
     }
 }

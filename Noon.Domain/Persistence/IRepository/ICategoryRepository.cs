@@ -11,6 +11,8 @@ namespace Noon.Domain.Persistence.IRepository
     public interface ICategoryRepository : IGenericRepository<Category>
     {
         Task<Category?> SearchCategoryByName(string categoryName);
+        Task<Guid> GetCategoryIdByName(string categoryName);
+       
         
     }
 }

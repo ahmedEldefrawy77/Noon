@@ -19,10 +19,11 @@ namespace Noon.Domain.Entities.Products
         public Guid? SpecifiedCategoryId { get; set; }
         public Brand? Brand { get; set; }
         public Guid BrandId { get; set; }
+        public Category? Category { get; set; }
+        public Guid CategoryId { get; set; }
         public int Quantity { get; set; } = 0;
         public ICollection<OrderProduct>? OrdersProducts { get; set; }
-       
-        [NotMapped] // Exclude from database mapping
+        public ICollection<WishListProducts>? WishListProducts { get; set; }
         public Dictionary<string, string> Specifications { get; set; } = new Dictionary<string, string>();
        
 

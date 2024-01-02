@@ -20,7 +20,7 @@ namespace Noon.Api.Controllers.AdminController
             _mediator = mediator;
         }
         [HttpPost]
-        public async Task<IActionResult> Post(CreateBrandRecord record)
+        public async Task<IActionResult> CreateBrand(CreateBrandRecord record)
         {
             BaseCommonResponse response = new BaseCommonResponse();
             return Ok(response = await _mediator.Send(new CreateBrandRequest { CreateBrandRecord = record }));

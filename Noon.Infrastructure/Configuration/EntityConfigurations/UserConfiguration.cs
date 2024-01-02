@@ -30,9 +30,7 @@ namespace Noon.Infrastructure.Configuration.EntityConfigurations
             builder.Property(e => e.Role).IsRequired().HasDefaultValue("User").HasMaxLength(5).ValueGeneratedOnAdd();
 
             builder.HasOne(e => e.RefreshToken).WithOne(e => e.User).HasForeignKey<RefreshToken>(e => e.UserId);
-
-            builder.HasOne(e => e.WishList).WithOne(e => e.User).HasForeignKey<WishList>(e => e.WishListUserId);
-            
+   
         }
     }
 }

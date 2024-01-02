@@ -10,8 +10,10 @@ namespace Noon.Domain.Entities
 {
     public class WishList : BaseEntity
     {
+        public string Name { get; set; } = "default";
         public User? User { get; set; }
         public Guid WishListUserId { get; set; }
-        public ICollection<Product>? Products { get; set; }
+        public ICollection<WishListProducts>? WishListProducts{ get; set; }
+        public bool Default { get; set; } = false;
     }
 }

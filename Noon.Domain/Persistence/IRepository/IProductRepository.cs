@@ -16,7 +16,8 @@ namespace Noon.Domain.Persistence.IRepository
         //meant to be used in 
         Task<IReadOnlyList<Product>> GetProductByBrand(string brandName);
         Task<IReadOnlyList<Product>> GetProductBySpecifiedCategory(string specifiedCategoryName);
-        Task<IReadOnlyList<Product>> GetProductsByPriceRange(string prdName,decimal minPrice, decimal maxPrice);
+        Task<IReadOnlyList<Product>> GetProductsByPriceRange(string prdName,decimal? minPrice, decimal? maxPrice);
+        Task<IReadOnlyList<Product>> GetAllProductsByCategoryName(string Name);
         //Task<Product> AddProductReview(Guid productId, ProductReview review);
     }
 }

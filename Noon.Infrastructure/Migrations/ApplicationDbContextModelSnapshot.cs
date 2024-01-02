@@ -176,6 +176,9 @@ namespace Noon.Infrastructure.Migrations
                     b.Property<Guid>("BrandId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -194,16 +197,13 @@ namespace Noon.Infrastructure.Migrations
                     b.Property<Guid?>("SpecifiedCategoryId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("WishListId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BrandId");
 
-                    b.HasIndex("SpecifiedCategoryId");
+                    b.HasIndex("CategoryId");
 
-                    b.HasIndex("WishListId");
+                    b.HasIndex("SpecifiedCategoryId");
 
                     b.ToTable("Products");
                 });
@@ -334,15 +334,37 @@ namespace Noon.Infrastructure.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("Default")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<Guid>("WishListUserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("WishListUserId")
-                        .IsUnique();
+                    b.HasIndex("WishListUserId");
 
                     b.ToTable("WishList");
+                });
+
+            modelBuilder.Entity("Noon.Domain.Entities.WishListProducts", b =>
+                {
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("WishListId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ProductId", "WishListId");
+
+                    b.HasIndex("WishListId");
+
+                    b.ToTable("WishListProducts");
                 });
 
             modelBuilder.Entity("Noon.Domain.Entities.Address", b =>
@@ -420,15 +442,19 @@ namespace Noon.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Noon.Domain.Entities.Products.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("Noon.Domain.Entities.Products.SpecifiedCategory", "SpecifiedCategory")
                         .WithMany("Products")
                         .HasForeignKey("SpecifiedCategoryId");
 
-                    b.HasOne("Noon.Domain.Entities.WishList", null)
-                        .WithMany("Products")
-                        .HasForeignKey("WishListId");
-
                     b.Navigation("Brand");
+
+                    b.Navigation("Category");
 
                     b.Navigation("SpecifiedCategory");
                 });
@@ -469,12 +495,31 @@ namespace Noon.Infrastructure.Migrations
             modelBuilder.Entity("Noon.Domain.Entities.WishList", b =>
                 {
                     b.HasOne("Noon.Domain.Entities.User", "User")
-                        .WithOne("WishList")
-                        .HasForeignKey("Noon.Domain.Entities.WishList", "WishListUserId")
+                        .WithMany("WishList")
+                        .HasForeignKey("WishListUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Noon.Domain.Entities.WishListProducts", b =>
+                {
+                    b.HasOne("Noon.Domain.Entities.Products.Product", "Product")
+                        .WithMany("WishListProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Noon.Domain.Entities.WishList", "WishList")
+                        .WithMany("WishListProducts")
+                        .HasForeignKey("WishListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("WishList");
                 });
 
             modelBuilder.Entity("Noon.Domain.Entities.Order", b =>
@@ -491,6 +536,8 @@ namespace Noon.Infrastructure.Migrations
                 {
                     b.Navigation("Brands");
 
+                    b.Navigation("Products");
+
                     b.Navigation("SpecifiedCategories");
                 });
 
@@ -499,6 +546,8 @@ namespace Noon.Infrastructure.Migrations
                     b.Navigation("OrdersProducts");
 
                     b.Navigation("Price");
+
+                    b.Navigation("WishListProducts");
                 });
 
             modelBuilder.Entity("Noon.Domain.Entities.Products.SpecifiedCategory", b =>
@@ -522,7 +571,7 @@ namespace Noon.Infrastructure.Migrations
 
             modelBuilder.Entity("Noon.Domain.Entities.WishList", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("WishListProducts");
                 });
 #pragma warning restore 612, 618
         }

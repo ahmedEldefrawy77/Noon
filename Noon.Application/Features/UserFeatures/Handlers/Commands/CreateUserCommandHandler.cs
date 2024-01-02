@@ -33,9 +33,6 @@ namespace Noon.Application.Features.UserFeatures.Handlers.Commands
             BaseCommonResponse response = new BaseCommonResponse();
             RegiseterUserDtoValidator validator = new RegiseterUserDtoValidator(_userRepository);
 
-            if(request.RegisterUserDto == null)
-                throw new ArgumentNullException(nameof(request));
-
 
             var validationResult = await validator.ValidateAsync(request.RegisterUserDto);
             if ( validationResult.IsValid == false)

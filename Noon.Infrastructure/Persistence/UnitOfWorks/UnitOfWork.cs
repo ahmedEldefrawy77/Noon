@@ -20,6 +20,8 @@ namespace Noon.Infrastructure.Persistence.UOW
         private ICategoryRepository? _categoryRepository;
         private ISpecifiedCategoryRepository? _specifiedCategoryRepository;
         private IMoneyRepository? _moneyRepository;
+        private IWishListRepository? _wishListRepository;
+        private IWishListProductRepository? _wishListProductRepository;
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
@@ -29,7 +31,7 @@ namespace Noon.Infrastructure.Persistence.UOW
             _userRepository ??= new UserRepository(_context);
  
         public IProductRepository ProductRepostiory =>
-             _productRepository ??= new ProductRepository(_context);
+             _productRepository ??= new ProductRepository(_context,_brandRepository!,_specifiedCategoryRepository!,_categoryRepository!);
 
         public IBrandRepository BrandRepository =>
             _brandRepository ??= new BrandRepository(_context);
@@ -43,6 +45,11 @@ namespace Noon.Infrastructure.Persistence.UOW
         public IMoneyRepository MoneyRepository 
             => _moneyRepository ??= new MoneyRepository(_context);
 
+        public IWishListRepository WishListRepository
+            => _wishListRepository ??= new WishListRepository(_context);
+
+        public IWishListProductRepository WishListProductRepository 
+            => _wishListProductRepository ??= new WishListProductRepository(_context,_wishListRepository!);
         public void Dispose()
         {
             _context.Dispose();

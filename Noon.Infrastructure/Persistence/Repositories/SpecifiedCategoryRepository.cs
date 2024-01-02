@@ -13,10 +13,24 @@ namespace Noon.Infrastructure.Persistence.Repositories
     {
         public SpecifiedCategoryRepository(ApplicationDbContext context) : base(context) { }
 
+        public async Task<List<Guid>> GetAllSpecifiedCategoryIdsWithCategoryId(Guid categoryId)
+        {
+            List<Guid> specifiedCategoryNames = await _dbSet.Where(e=>e.CategoryId == categoryId).Select(e=>e.Id).ToListAsync();
+ 
+            return specifiedCategoryNames;
+        }
+
         public async Task<SpecifiedCategory?> GetSpecifiedCategoryByName(string name)
         {
            SpecifiedCategory? spCat = await _dbSet.FirstOrDefaultAsync(x => x.Name == name);
             return spCat;
+        }
+
+        public async Task<Guid> GetSpecifiedCategoryIdByName(string specName)
+        {
+
+            Guid id = await _dbSet.Where(e => e.Name == specName).Select(e => e.Id).FirstOrDefaultAsync();
+            return id;
         }
     }
 }

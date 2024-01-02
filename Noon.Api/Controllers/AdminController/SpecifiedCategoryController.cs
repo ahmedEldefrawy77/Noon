@@ -19,7 +19,7 @@ namespace Noon.Api.Controllers.AdminController
             _mediator = mediator;
         }
         [HttpPost]
-        public async Task<IActionResult> Post( SpecifiedCategoryRecord urequest)
+        public async Task<IActionResult> CreateSpecifiedCategory( SpecifiedCategoryRecord urequest)
         {
             BaseCommonResponse response = await _mediator.Send(new CreateSpecifiedCategoryRequest { request = urequest });
             return Ok(response);

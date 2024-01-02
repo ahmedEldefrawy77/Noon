@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Noon.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Spec : Migration
+    public partial class first : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -114,7 +114,8 @@ namespace Noon.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", maxLength: 128, nullable: false),
                     OrderUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TotalPrice = table.Column<double>(type: "float", nullable: false),
+                    TotalPrice = table.Column<double>(type: "float(18)", precision: 18, scale: 2, nullable: false),
+                    TotalPriceAfterTax = table.Column<double>(type: "float(18)", precision: 18, scale: 2, nullable: false),
                     DateOrderdAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -173,7 +174,9 @@ namespace Noon.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", maxLength: 128, nullable: false),
-                    WishListUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    WishListUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Default = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -193,11 +196,9 @@ namespace Noon.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", maxLength: 128, nullable: false),
                     SpecifiedCategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     BrandId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TotalPriceAfterTax = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
                     Specifications = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    WishListId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -211,20 +212,14 @@ namespace Noon.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Products_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_Products_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Products_SpecifiedCategories_SpecifiedCategoryId",
                         column: x => x.SpecifiedCategoryId,
                         principalTable: "SpecifiedCategories",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Products_WishList_WishListId",
-                        column: x => x.WishListId,
-                        principalTable: "WishList",
                         principalColumn: "Id");
                 });
 
@@ -235,7 +230,7 @@ namespace Noon.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    Currency = table.Column<string>(type: "VARCHAR(3)", maxLength: 3, nullable: false)
+                    Currency = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -244,6 +239,54 @@ namespace Noon.Infrastructure.Migrations
                         name: "FK_Moneys_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderProduct",
+                columns: table => new
+                {
+                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderProduct", x => new { x.OrderId, x.ProductId });
+                    table.ForeignKey(
+                        name: "FK_OrderProduct_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderProduct_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "WishListProducts",
+                columns: table => new
+                {
+                    WishListId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WishListProducts", x => new { x.ProductId, x.WishListId });
+                    table.ForeignKey(
+                        name: "FK_WishListProducts_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_WishListProducts_WishList_WishListId",
+                        column: x => x.WishListId,
+                        principalTable: "WishList",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -270,6 +313,11 @@ namespace Noon.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderProduct_ProductId",
+                table: "OrderProduct",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_OrderUserId",
                 table: "Orders",
                 column: "OrderUserId");
@@ -280,19 +328,14 @@ namespace Noon.Infrastructure.Migrations
                 column: "BrandId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_OrderId",
+                name: "IX_Products_CategoryId",
                 table: "Products",
-                column: "OrderId");
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_SpecifiedCategoryId",
                 table: "Products",
                 column: "SpecifiedCategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_WishListId",
-                table: "Products",
-                column: "WishListId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RefreshToken_UserId",
@@ -313,8 +356,12 @@ namespace Noon.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_WishList_WishListUserId",
                 table: "WishList",
-                column: "WishListUserId",
-                unique: true);
+                column: "WishListUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WishListProducts_WishListId",
+                table: "WishListProducts",
+                column: "WishListId");
         }
 
         /// <inheritdoc />
@@ -327,31 +374,37 @@ namespace Noon.Infrastructure.Migrations
                 name: "Moneys");
 
             migrationBuilder.DropTable(
+                name: "OrderProduct");
+
+            migrationBuilder.DropTable(
                 name: "RefreshToken");
 
             migrationBuilder.DropTable(
                 name: "Return");
 
             migrationBuilder.DropTable(
-                name: "Products");
-
-            migrationBuilder.DropTable(
-                name: "Brands");
+                name: "WishListProducts");
 
             migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "SpecifiedCategories");
+                name: "Products");
 
             migrationBuilder.DropTable(
                 name: "WishList");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Brands");
+
+            migrationBuilder.DropTable(
+                name: "SpecifiedCategories");
 
             migrationBuilder.DropTable(
                 name: "User");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
         }
     }
 }

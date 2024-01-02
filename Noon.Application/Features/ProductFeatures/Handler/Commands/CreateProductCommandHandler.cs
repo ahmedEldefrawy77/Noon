@@ -29,8 +29,10 @@ namespace Noon.Application.Features.ProductFeatures.Handler.Commands
         {
             BaseCommonResponse response = new BaseCommonResponse();
             if(request.Productrecord == null || request.Productrecord.Amount < 0 || request.Productrecord.Currency == string.Empty 
-                || request.Productrecord.Quantity == 0 || request.Productrecord.BrandName == string.Empty || request.Productrecord.SpecifiedCategoryName ==string.Empty
-                || request.Productrecord.Specifications == null|| request.Productrecord.Specifications.Count < 0 || request.Productrecord.ProductName == string.Empty || request.Productrecord.ProductDescription == string.Empty)
+                || request.Productrecord.Quantity == 0 || request.Productrecord.BrandName == string.Empty
+                || request.Productrecord.SpecifiedCategoryName ==string.Empty
+                || request.Productrecord.Specifications == null|| request.Productrecord.Specifications.Count < 0 
+                || request.Productrecord.ProductName == string.Empty || request.Productrecord.ProductDescription == string.Empty)
             {
                 response.Status = false;
                 response.Response = "Invalid Request: Check your Entry Data";

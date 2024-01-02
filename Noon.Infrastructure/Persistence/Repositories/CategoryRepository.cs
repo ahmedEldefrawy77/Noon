@@ -12,7 +12,14 @@ namespace Noon.Infrastructure.Persistence.Repositories
     public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
     {
         public CategoryRepository(ApplicationDbContext context) : base(context) { }
-        
+
+       
+
+        public async Task<Guid> GetCategoryIdByName(string categoryName)
+        {
+            Guid id = await _dbSet.Where(e=>e.Name == categoryName).Select(e=>e.Id).FirstOrDefaultAsync();
+            return id;
+        }
 
         public async Task<Category?> SearchCategoryByName(string categoryName)
         {
