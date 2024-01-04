@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Noon.Application.Features.CategoryFeatures.Requests.Commands;
@@ -16,7 +17,7 @@ namespace Noon.Api.Controllers.AdminController
         {
             _mediator = mediator;
         }
-        [HttpPost]
+        [HttpPost, Authorize(Roles="Admin")]
         public async Task<IActionResult> CreateCategory(string categoryName)
         {
             BaseCommonResponse response = new BaseCommonResponse();

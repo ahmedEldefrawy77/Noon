@@ -42,7 +42,7 @@ namespace Noon.Application.Features.WishListFeatures.Handlers.Commands
 
             //Check if the User Dosenot have any wishList Created so I Made one with name default 
 
-            if (WishListForUserFromDb == null || WishListForUserFromDb.Count == 0) 
+            if ( WishListForUserFromDb?.Count == 0) 
             {
                 WishList wishList = new WishList();
                 wishList.Name = "default";
@@ -85,7 +85,7 @@ namespace Noon.Application.Features.WishListFeatures.Handlers.Commands
             }
             response.Status = true;
             response.ResponseNumber = 200;
-            response.Response = "Product Has been Added Successfully to your Wish List";
+            response.Response = "Product Has been Successfully Added to your Wish List";
             return response;
 
         }

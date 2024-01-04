@@ -13,6 +13,7 @@ namespace Noon.Domain.Persistence.IRepository
     {
         Task<Brand?> GetBrandByName(string name);
         Task<Guid> GetBrandByIdByName(string brandName);
+        Task<bool> IsBrandExistForCategory(Guid categoryId, string brandName);
        
     }
 }

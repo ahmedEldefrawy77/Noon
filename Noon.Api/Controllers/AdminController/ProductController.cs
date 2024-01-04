@@ -21,7 +21,7 @@ namespace Noon.Api.Controllers.AdminController
         {
             _mediator = mediator;
         }
-        [HttpPost]
+        [HttpPost, Authorize(Roles="Seller")]
         public async Task<IActionResult> CreatePoduct(CreateProductRecord uRequest)
         {
             BaseCommonResponse response = new BaseCommonResponse();

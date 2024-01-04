@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Noon.Application.DTOs.Record.SpecifiedCategory;
 using Noon.Application.Features.SpecifiedCategoryFeatures.Requests.Commands;
@@ -18,7 +19,7 @@ namespace Noon.Api.Controllers.AdminController
         {
             _mediator = mediator;
         }
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateSpecifiedCategory( SpecifiedCategoryRecord urequest)
         {
             BaseCommonResponse response = await _mediator.Send(new CreateSpecifiedCategoryRequest { request = urequest });

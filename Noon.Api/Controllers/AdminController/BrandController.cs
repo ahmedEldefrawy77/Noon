@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Noon.Application.DTOs.Record.Brand;
 using Noon.Application.Features.BrandFeatures.Requests.Commands;
@@ -19,7 +20,7 @@ namespace Noon.Api.Controllers.AdminController
         {
             _mediator = mediator;
         }
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateBrand(CreateBrandRecord record)
         {
             BaseCommonResponse response = new BaseCommonResponse();

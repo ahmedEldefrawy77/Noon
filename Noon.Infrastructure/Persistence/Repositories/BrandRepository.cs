@@ -26,5 +26,15 @@ namespace Noon.Infrastructure.Persistence.Repositories
             return brand = await  _dbSet.FirstOrDefaultAsync(e => e.Name == name);
             
         }
+
+        public async Task<bool> IsBrandExistForCategory(Guid categoryId, string brandName)
+        {
+            Brand? brandForCategoryFromDb = await _dbSet.Where(e=>e.CategoryId == categoryId && e.Name == brandName).FirstOrDefaultAsync();
+            if(brandForCategoryFromDb != null)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

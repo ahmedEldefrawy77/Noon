@@ -58,7 +58,7 @@ namespace Noon.Infrastructure.Persistence.Repositories
         public async Task<bool> IsProductAddToWishList(Guid wishListid, Guid productid)
         {
            IReadOnlyList<WishListProducts>? wishListProduct= await Task.Run(()=>_dbSet.Where(e=> e.WishListId == wishListid && e.ProductId == productid).ToListAsync());
-           if(wishListProduct != null || wishListProduct?.Count != 0 )
+           if(wishListProduct?.Count != 0 )
            {
                 return true;
            }

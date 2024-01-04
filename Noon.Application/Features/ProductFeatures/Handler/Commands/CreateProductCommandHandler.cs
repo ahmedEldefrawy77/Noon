@@ -32,7 +32,8 @@ namespace Noon.Application.Features.ProductFeatures.Handler.Commands
                 || request.Productrecord.Quantity == 0 || request.Productrecord.BrandName == string.Empty
                 || request.Productrecord.SpecifiedCategoryName ==string.Empty
                 || request.Productrecord.Specifications == null|| request.Productrecord.Specifications.Count < 0 
-                || request.Productrecord.ProductName == string.Empty || request.Productrecord.ProductDescription == string.Empty)
+                || request.Productrecord.ProductName == string.Empty || request.Productrecord.ProductDescription == string.Empty
+                || request.Productrecord.CategoryName == string.Empty)
             {
                 response.Status = false;
                 response.Response = "Invalid Request: Check your Entry Data";
@@ -40,8 +41,9 @@ namespace Noon.Application.Features.ProductFeatures.Handler.Commands
             }
 
             Brand? brandFromDb = await _unitOfWork.BrandRepository.GetBrandByName(request.Productrecord.BrandName);
-            SpecifiedCategory? SpecCatFromDb = await _unitOfWork.SpecificCategoryRepository.GetSpecifiedCategoryByName(request.Productrecord.SpecifiedCategoryName);
-            if(brandFromDb == null || SpecCatFromDb == null)
+            SpecifiedCategory? specCatFromDb = await _unitOfWork.SpecificCategoryRepository.GetSpecifiedCategoryByName(request.Productrecord.SpecifiedCategoryName);
+            Category? categoryFromDb = await _unitOfWork.CategoryRepository.SearchCategoryByName(request.Productrecord.CategoryName);
+            if (brandFromDb == null || specCatFromDb == null||categoryFromDb == null)
             {
                 response.Status = false;
                 response.Response = "Eather Brand Name is false or Specified Category is false: Check the Name";
@@ -50,7 +52,8 @@ namespace Noon.Application.Features.ProductFeatures.Handler.Commands
 
             Product? product = new Product();
             product.BrandId = brandFromDb.Id;
-            product.SpecifiedCategoryId = SpecCatFromDb.Id;
+            product.SpecifiedCategoryId = specCatFromDb.Id;
+            product.CategoryId = categoryFromDb.Id;
             product.Name = request.Productrecord.ProductName;
             product.Description = request.Productrecord.ProductDescription;
             product.Quantity = request.Productrecord.Quantity;

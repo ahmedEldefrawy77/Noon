@@ -25,6 +25,8 @@ namespace Noon.Application.Features.BrandFeatures.Handlers.Commands
         public async  Task<BaseCommonResponse> Handle(CreateBrandRequest request, CancellationToken cancellationToken)
         {
             BaseCommonResponse response = new BaseCommonResponse();
+
+            //checking for Valid Entry Data
             if (request.CreateBrandRecord == null || request.CreateBrandRecord.CategoryName == null || request.CreateBrandRecord.BrandName == null)
             {
                 response.Status = false;
@@ -33,27 +35,34 @@ namespace Noon.Application.Features.BrandFeatures.Handlers.Commands
 
                 return response;
             }
-            Brand? brandFromDb = await _unitOfWork.BrandRepository.GetBrandByName(request.CreateBrandRecord.BrandName);
-            if(brandFromDb != null)
-            {
-                response.Status = false;
-                response.Response = "Brand Name is already exists: choose another Name";
-            }
+
+            //check for Category
             Category? CategoryFromDb = await _unitOfWork.CategoryRepository.SearchCategoryByName(request.CreateBrandRecord.CategoryName);
-            if(CategoryFromDb == null)
+            if (CategoryFromDb == null)
             {
-                NotFoundException notfound = new NotFoundException("Category Name" , request.CreateBrandRecord.CategoryName);
+                NotFoundException notfound = new NotFoundException("Category Name", request.CreateBrandRecord.CategoryName);
                 response.Status = false;
                 response.ResponseNumber = 500;
                 response.Response = notfound;
                 return response;
             }
-            Brand brand = new Brand();
 
+            //check if Brand with the same given name is already created 
+            Guid CategoryId = await _unitOfWork.CategoryRepository.GetCategoryIdByName(request.CreateBrandRecord.CategoryName);
+            bool IsBrandExistedForCategory = await _unitOfWork.BrandRepository.IsBrandExistForCategory(CategoryId,request.CreateBrandRecord.BrandName);
+            if(IsBrandExistedForCategory == true)
+            {
+                response.Status = false;
+                response.Response = $"Brand Name{request.CreateBrandRecord.BrandName} is already exists for this Category {request.CreateBrandRecord.CategoryName}: choose another Name";
+                return response;
+            }
+           
+           
+            Brand brand = new Brand();
             brand.Name=request.CreateBrandRecord.BrandName;
             brand.CategoryId = CategoryFromDb.Id;
 
-           Brand addedBrand =  await _unitOfWork.BrandRepository.AddAsync(brand);
+            Brand addedBrand =  await _unitOfWork.BrandRepository.AddAsync(brand);
 
             response.Id = addedBrand.Id;
             response.Status = true;

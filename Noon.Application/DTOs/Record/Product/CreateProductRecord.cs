@@ -15,6 +15,7 @@ namespace Noon.Application.DTOs.Record.Product
         public string SpecifiedCategoryName { get; set; } = string.Empty;
         public string BrandName {  get; set; } = string.Empty;
         public int Quantity { get; set; }
+        public string CategoryName {  get; set; } = string.Empty;
         public Dictionary<string , string> Specifications { get; set; } = new Dictionary<string , string>();
 
     }
