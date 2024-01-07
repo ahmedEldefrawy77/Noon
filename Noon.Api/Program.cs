@@ -42,6 +42,8 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.UseStaticFiles();
+
 app.UseMiddleware<GlobalErrorHandlerMiddleware>();
 app.UseMiddleware<TransactionMiddleware>();
 

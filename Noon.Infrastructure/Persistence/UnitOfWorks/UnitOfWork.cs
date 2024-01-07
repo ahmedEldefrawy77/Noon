@@ -30,8 +30,10 @@ namespace Noon.Infrastructure.Persistence.UOW
         public IUserRepository UserRepository =>
             _userRepository ??= new UserRepository(_context);
  
-        public IProductRepository ProductRepostiory =>
-             _productRepository ??= new ProductRepository(_context,_brandRepository!,_specifiedCategoryRepository!,_categoryRepository!);
+        public IProductRepository ProductRepostiory  =>
+            _productRepository ??= new ProductRepository(_context, BrandRepository, SpecificCategoryRepository, CategoryRepository);
+        
+           
 
         public IBrandRepository BrandRepository =>
             _brandRepository ??= new BrandRepository(_context);

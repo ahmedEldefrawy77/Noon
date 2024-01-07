@@ -24,6 +24,7 @@ namespace Noon.Infrastructure.Configuration.EntityConfigurations
 
             builder.HasOne(e=>e.Brand).WithMany(e=>e.Products).HasForeignKey(e=>e.BrandId);
             builder.HasOne(e => e.Category).WithMany(e => e.Products).HasForeignKey(e => e.CategoryId).OnDelete(DeleteBehavior.NoAction); 
+            builder.Property(e=>e.ImagePath).IsRequired();
 
             builder.Property(e => e.Specifications).HasConversion(
                 v => JsonConvert.SerializeObject(v),

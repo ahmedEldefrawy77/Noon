@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="B2Net" Version="0.7.5" />
+    <PackageReference Include="Backblaze.Client" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
@@ -19,6 +21,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Noon.Application\Noon.Application.csproj" />
     <ProjectReference Include="..\Noon.Domain\Noon.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\RootConfigure\" />
   </ItemGroup>
 
 </Project>

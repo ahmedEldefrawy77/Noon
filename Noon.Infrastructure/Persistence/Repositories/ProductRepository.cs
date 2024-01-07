@@ -39,11 +39,18 @@ namespace Noon.Infrastructure.Persistence.Repositories
 
             List<Product> AllProductForCategory = new List<Product>();
 
+            
+
             List<Guid> specCategories = await _specRepository.GetAllSpecifiedCategoryIdsWithCategoryId(categoryId);
 
             foreach(Guid specId in specCategories)
             {
-               AllProductForCategory = await _dbSet.Where(e=>e.SpecifiedCategoryId ==  specId).ToListAsync();
+               AllProductForCategory = await _dbSet.Where(e=>e.SpecifiedCategoryId ==  specId)
+                    .Include(e=>e.Price)
+                    .Include(e=>e.Brand)
+                    .Include(e=>e.Category)
+                    .Include(e=>e.SpecifiedCategory)
+                    .ToListAsync();
             }
 
             IReadOnlyList<Product> readOnlyProducts = AllProductForCategory.AsReadOnly();
@@ -63,7 +70,11 @@ namespace Noon.Infrastructure.Persistence.Repositories
             }
 
             List<Product> prdList = await _context.Products
-               .Where(product => product.BrandId == brandId).ToListAsync();
+               .Where(product => product.BrandId == brandId)
+               .Include(e => e.Price)
+                    .Include(e => e.Brand!.Name)
+                    .Include(e => e.Category!.Name)
+                    .Include(e => e.SpecifiedCategory!.Name).ToListAsync();
 
             IReadOnlyList<Product> readOnlyProducts = prdList.AsReadOnly();
             return readOnlyProducts;
@@ -83,7 +94,11 @@ namespace Noon.Infrastructure.Persistence.Repositories
             }
 
             List<Product> prdList = await _context.Products
-               .Where(product => product.SpecifiedCategoryId == scId).ToListAsync();
+               .Where(product => product.SpecifiedCategoryId == scId)
+               .Include(e => e.Price )
+                    .Include(e => e.Brand!.Name)
+                    .Include(e => e.Category!.Name)
+                    .Include(e => e.SpecifiedCategory!.Name).ToListAsync();
 
             IReadOnlyList<Product> readOnlyProducts = prdList.AsReadOnly();
             return readOnlyProducts;

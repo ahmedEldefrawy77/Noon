@@ -11,5 +11,6 @@ namespace Noon.Application.Features.ProductFeatures.Request.Queries
     public class GetAllProductsForCategoryRequest : IRequest<BaseCommonResponse>
     {
         public string CategoryName { get; set; } = string.Empty;
+        
     }
 }

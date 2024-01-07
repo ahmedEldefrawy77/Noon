@@ -22,7 +22,7 @@ using Microsoft.Extensions.Options;
 using Noon.Domain.Persistence.IRepository;
 using Noon.Application.Contracts.Persistence.UnitOfWork;
 
-namespace Noon.Infrastructure.AuthServices
+namespace Noon.Infrastructure.Services.AuthServices
 {
     public class AuthService : GenericRepository<User>, IAuthServices
     {
@@ -35,7 +35,7 @@ namespace Noon.Infrastructure.AuthServices
         private readonly RefreshTokenValidator _refreshTokenValidator;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
 
-        public AuthService(ApplicationDbContext context,IJwtProvider jwtProvider,
+        public AuthService(ApplicationDbContext context, IJwtProvider jwtProvider,
             IOptions<RefreshOptions> refreshOptions,
             IOptions<AccessOptions> accessOptions,
             IMediator mediator,
@@ -66,8 +66,8 @@ namespace Noon.Infrastructure.AuthServices
             };
             return token;
         }
-        private RefreshToken GenerateRefreshToken(Guid userId = default(Guid)
-      , Guid id = default(Guid))
+        private RefreshToken GenerateRefreshToken(Guid userId = default
+      , Guid id = default)
         {
             string refreshToken = _jwtProvider.GetRefreshtoken();
 
@@ -82,17 +82,17 @@ namespace Noon.Infrastructure.AuthServices
 
             return newRefreshToken;
         }
-        
+
         #endregion
         public async Task<BaseCommonResponse> Login(UserLoginRequest userRequest)
         {
-            
+
 
             BaseCommonResponse response = new BaseCommonResponse();
             User? userFromDb = await _unitOfWork.UserRepository.GetUserWithEmail(userRequest.Email);
             if (userFromDb == null)
             {
-                NotFoundException ex = new ("User" ,  userRequest.Email);
+                NotFoundException ex = new("User", userRequest.Email);
                 response.Status = false;
                 response.ResponseNumber = 500;
                 response.Response = ex;
@@ -101,7 +101,7 @@ namespace Noon.Infrastructure.AuthServices
 
             if (!BCrypt.Net.BCrypt.Verify(userRequest.Password, userFromDb.Password))
             {
-             
+
                 response.Status = false;
                 response.ResponseNumber = 400;
                 response.Response = "Password is not Correct please try again Later";
@@ -121,7 +121,7 @@ namespace Noon.Infrastructure.AuthServices
                 userFromDb.RefreshToken = GenerateRefreshToken(userFromDb.Id);
 
                 await _unitOfWork.UserRepository.UpdateAsync(userFromDb);
- 
+
             }
             Token token = GenerateToken(userFromDb, userFromDb.RefreshToken);
             response.Id = userFromDb.Id;
@@ -134,15 +134,15 @@ namespace Noon.Infrastructure.AuthServices
 
         public async Task<BaseCommonResponse> Register(CreateUserDto createUserDto)
         {
-           User user =  _mapper.Map<User>(createUserDto);   
+            User user = _mapper.Map<User>(createUserDto);
             user.RefreshToken = GenerateRefreshToken();
 
             user.DateCreatedAt = DateTime.UtcNow;
             RegisterUserDto userDto = _mapper.Map<RegisterUserDto>(user);
 
-           BaseCommonResponse response = await _mediator.Send(new CreateUserRequest { RegisterUserDto = userDto});
+            BaseCommonResponse response = await _mediator.Send(new CreateUserRequest { RegisterUserDto = userDto });
 
-            if(response.ResponseNumber == 200)
+            if (response.ResponseNumber == 200)
             {
                 Token token = GenerateToken(response.Response, user.RefreshToken);
                 UserRegisterOutDto userOut = _mapper.Map<UserRegisterOutDto>(response.Response);
@@ -181,7 +181,7 @@ namespace Noon.Infrastructure.AuthServices
 
             return response;
 
-           
+
         }
 
         public async Task<BaseCommonResponse> Update(User user)
@@ -190,12 +190,12 @@ namespace Noon.Infrastructure.AuthServices
 
             await _unitOfWork.UserRepository.UpdateAsync(user);
             response.Status = true;
-            response.ResponseNumber =200;
+            response.ResponseNumber = 200;
 
             return response;
         }
 
-        public  Task<BaseCommonResponse> UpdatePassword(PasswordRecord password, Guid id)
+        public Task<BaseCommonResponse> UpdatePassword(PasswordRecord password, Guid id)
         {
             throw new NotImplementedException();
         }

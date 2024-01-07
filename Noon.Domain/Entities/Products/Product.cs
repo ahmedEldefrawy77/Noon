@@ -22,6 +22,7 @@ namespace Noon.Domain.Entities.Products
         public Category? Category { get; set; }
         public Guid CategoryId { get; set; }
         public int Quantity { get; set; } = 0;
+        public List<string> ImagePath { get; set; } = new List<string>();
         public ICollection<OrderProduct>? OrdersProducts { get; set; }
         public ICollection<WishListProducts>? WishListProducts { get; set; }
         public Dictionary<string, string> Specifications { get; set; } = new Dictionary<string, string>();

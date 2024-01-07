@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +18,8 @@ namespace Noon.Application.DTOs.Record.Product
         public string BrandName {  get; set; } = string.Empty;
         public int Quantity { get; set; }
         public string CategoryName {  get; set; } = string.Empty;
+        [Required]
+        public IFormFileCollection? ProductImage { get; set; }
         public Dictionary<string , string> Specifications { get; set; } = new Dictionary<string , string>();
 
     }

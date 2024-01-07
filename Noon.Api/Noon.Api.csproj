@@ -18,4 +18,8 @@
     <ProjectReference Include="..\Noon.Infrastructure\Noon.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\ImageUpload\Product\" />
+  </ItemGroup>
+
 </Project>
