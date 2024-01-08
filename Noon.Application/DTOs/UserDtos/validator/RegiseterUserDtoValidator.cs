@@ -31,7 +31,7 @@ namespace Noon.Application.DTOs.UserDtos.validator
             RuleFor(p => p.Password).NotEmpty()
                 .WithMessage("{PropertyName} Couldnot be Empty")
                .NotNull()
-               .MinimumLength(5).WithMessage("Password lenght should be atleast 5");
+               .MinimumLength(8).WithMessage("Password lenght should be atleast 5");
 
         }
     }

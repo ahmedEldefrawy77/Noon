@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Noon.Infrastructure;
+using Noon.Infrastructure.Persistence;
 
 #nullable disable
 
@@ -58,6 +58,32 @@ namespace Noon.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Address");
+                });
+
+            modelBuilder.Entity("Noon.Domain.Entities.OTP", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(128)
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateExAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OneTimePassword")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("OTPs");
                 });
 
             modelBuilder.Entity("Noon.Domain.Entities.Order", b =>
@@ -386,6 +412,17 @@ namespace Noon.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Noon.Domain.Entities.OTP", b =>
+                {
+                    b.HasOne("Noon.Domain.Entities.User", "User")
+                        .WithMany("OTPs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Noon.Domain.Entities.Order", b =>
                 {
                     b.HasOne("Noon.Domain.Entities.User", "User")
@@ -562,6 +599,8 @@ namespace Noon.Infrastructure.Migrations
             modelBuilder.Entity("Noon.Domain.Entities.User", b =>
                 {
                     b.Navigation("Address");
+
+                    b.Navigation("OTPs");
 
                     b.Navigation("Orders");
 

@@ -17,10 +17,13 @@ namespace Noon.Infrastructure.IdentityProvider
     {
         private readonly AccessOptions _jwtAccessOptions;
         private readonly RefreshOptions _jwtRefreshTokenOptions;
-        public JwtProvider(IOptions<AccessOptions> jwtAccessOptions, IOptions<RefreshOptions> jwtRefreshOptions)
+        private readonly TemporarilyAccessOptions _temporarilyAccessOptions;
+
+        public JwtProvider(IOptions<AccessOptions> jwtAccessOptions, IOptions<RefreshOptions> jwtRefreshOptions, IOptions<TemporarilyAccessOptions> temporarilyAccessOptions)
         {
             _jwtAccessOptions = jwtAccessOptions.Value;
             _jwtRefreshTokenOptions = jwtRefreshOptions.Value;
+            _temporarilyAccessOptions = temporarilyAccessOptions.Value;
         }
         private string TokenGenerator(
             string secretKey,
@@ -83,7 +86,26 @@ namespace Noon.Infrastructure.IdentityProvider
                 DateTime.UtcNow.AddMonths(_jwtRefreshTokenOptions.ExpireTimeInMonths));
             return token;
         }
+        public string GetTemporarilyAccessToken(User user)
+        {
+            
+            var claims = new List<Claim>()
+            {
+                new("Id" , user.Id.ToString()),
+                new (ClaimTypes.Role, "Temporarily"),
+            };
 
+            if (string.IsNullOrEmpty(_temporarilyAccessOptions.SecretKey))
+                throw new ArgumentNullException("invalid Access options");
+
+            string token = TokenGenerator(
+                _temporarilyAccessOptions.SecretKey,
+                claims,
+                 null,
+                null,
+                DateTime.UtcNow.AddMinutes(_temporarilyAccessOptions.ExpireTimeInMintes));
+            return token;
+        }
     }
 }
 

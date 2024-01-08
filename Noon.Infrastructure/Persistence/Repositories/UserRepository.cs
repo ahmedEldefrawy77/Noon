@@ -24,6 +24,10 @@ namespace Noon.Infrastructure.Persistence.Repositories
         public async Task<User?> GetUserByToken(string token)
         => await _dbSet.Include(u => u.RefreshToken).FirstOrDefaultAsync(p=> p.RefreshToken.Value == token);
 
+        public async Task<Guid> GetUserIdWithEmail(string email)
+        => await Task.Run(()=> _dbSet.Where(e=>e.Email == email).Select(e=>e.Id).FirstOrDefaultAsync());
+        
+
         public async Task<User?> GetUserWithEmail(string email)
         {
             User? user = await Task.Run(() => _dbSet.Include(t => t.RefreshToken).FirstOrDefaultAsync(e => e.Email == email));

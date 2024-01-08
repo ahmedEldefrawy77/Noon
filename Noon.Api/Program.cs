@@ -1,9 +1,10 @@
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Noon.Infrastructure;
 using Noon.Application;
 using Noon.Infrastructure.Middleware;
+using Noon.Infrastructure.Services;
+using Noon.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 

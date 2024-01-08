@@ -15,8 +15,6 @@ namespace Noon.Application.Contracts.Persistence.IRepository
         Task<bool> IsEmailUniq(string email);
         Task<User?> GetUserByToken(string token);
         Task<IReadOnlyCollection<User>> GetAllUsersAsync();
-      
-
-
+        Task<Guid> GetUserIdWithEmail(string email);
     }
 }

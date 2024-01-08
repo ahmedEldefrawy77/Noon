@@ -72,13 +72,20 @@ namespace Noon.Infrastructure.Persistence.Repositories
             List<Product> prdList = await _context.Products
                .Where(product => product.BrandId == brandId)
                .Include(e => e.Price)
-                    .Include(e => e.Brand!.Name)
-                    .Include(e => e.Category!.Name)
-                    .Include(e => e.SpecifiedCategory!.Name).ToListAsync();
+                    .Include(e => e.Brand)
+                    .Include(e => e.Category)
+                    .Include(e => e.SpecifiedCategory)
+                    .ToListAsync();
 
             IReadOnlyList<Product> readOnlyProducts = prdList.AsReadOnly();
             return readOnlyProducts;
            
+        }
+
+        public async Task<Product?> GetProductById(Guid productId)
+        {
+            Product? productFromDb = await _dbSet.Where(e=>e.Id == productId).FirstOrDefaultAsync();
+            return productFromDb;
         }
 
         public async Task<IReadOnlyList<Product>> GetProductBySpecifiedCategory(string specifiedCategoryName)
@@ -96,9 +103,10 @@ namespace Noon.Infrastructure.Persistence.Repositories
             List<Product> prdList = await _context.Products
                .Where(product => product.SpecifiedCategoryId == scId)
                .Include(e => e.Price )
-                    .Include(e => e.Brand!.Name)
-                    .Include(e => e.Category!.Name)
-                    .Include(e => e.SpecifiedCategory!.Name).ToListAsync();
+                    .Include(e => e.Brand)
+                    .Include(e => e.Category)
+                    .Include(e => e.SpecifiedCategory)
+                    .ToListAsync();
 
             IReadOnlyList<Product> readOnlyProducts = prdList.AsReadOnly();
             return readOnlyProducts;

@@ -19,6 +19,7 @@ namespace Noon.Domain.Entities
         public ICollection<Return>? Returns { get; set; }
         //public ICollection<WarrantyClaim>? WarrantyClaims { get; set; }
         public ICollection<WishList>? WishList { get; set; }
+        public ICollection<OTP>? OTPs { get; set; }
         [JsonIgnore]
         public RefreshToken RefreshToken { get; set; } = new RefreshToken();
 

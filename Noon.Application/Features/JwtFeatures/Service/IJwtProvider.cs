@@ -11,5 +11,6 @@ namespace Noon.Infrastructure.IdentityProvider
     {
         string GetAccessToken(User user);
         string GetRefreshtoken();
+        string GetTemporarilyAccessToken(User user);
     }
 }

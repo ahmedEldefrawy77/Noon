@@ -18,5 +18,6 @@ namespace Noon.Application.Contracts.Persistence.UnitOfWork
         IMoneyRepository MoneyRepository { get; }
         IWishListRepository WishListRepository { get; }
         IWishListProductRepository WishListProductRepository { get; }
+        IOtpRepository OtpRepository { get; }
     }
 }

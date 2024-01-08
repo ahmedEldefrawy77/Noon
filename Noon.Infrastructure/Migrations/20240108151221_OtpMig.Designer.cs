@@ -12,8 +12,8 @@ using Noon.Infrastructure.Persistence;
 namespace Noon.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240102174901_first")]
-    partial class first
+    [Migration("20240108151221_OtpMig")]
+    partial class OtpMig
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -61,6 +61,32 @@ namespace Noon.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Address");
+                });
+
+            modelBuilder.Entity("Noon.Domain.Entities.OTP", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(128)
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateExAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OneTimePassword")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("OTPs");
                 });
 
             modelBuilder.Entity("Noon.Domain.Entities.Order", b =>
@@ -183,6 +209,10 @@ namespace Noon.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -385,6 +415,17 @@ namespace Noon.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Noon.Domain.Entities.OTP", b =>
+                {
+                    b.HasOne("Noon.Domain.Entities.User", "User")
+                        .WithMany("OTPs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Noon.Domain.Entities.Order", b =>
                 {
                     b.HasOne("Noon.Domain.Entities.User", "User")
@@ -561,6 +602,8 @@ namespace Noon.Infrastructure.Migrations
             modelBuilder.Entity("Noon.Domain.Entities.User", b =>
                 {
                     b.Navigation("Address");
+
+                    b.Navigation("OTPs");
 
                     b.Navigation("Orders");
 

@@ -3,16 +3,18 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Noon.Domain.Entities.ImageResult;
+using Noon.Domain.Entities.Products;
 using Noon.Domain.IServices.IPicService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Noon.Infrastructure.Services.PicService
 {
-    public class ImageService : IImageService
+    public class ImageService : IImageService 
     {
         private readonly IWebHostEnvironment _environment;
         private readonly IHttpContextAccessor _accessor;
@@ -22,13 +24,13 @@ namespace Noon.Infrastructure.Services.PicService
             _environment = environment;
             _accessor = accessor;
         }
-        public async Task<List<string>> GetImage(string hostUrl,Guid productId)
+        public  List<string> GetImage(string hostUrl,Guid productId , string objectName)
         {
             List<string> imageURLs = new List<string>();
            
             try
             {
-                string filePath = GetFilePath(productId);
+                string filePath = GetFilePath(productId, objectName);
 
                 if (System.IO.Directory.Exists(filePath))
                 {
@@ -40,7 +42,7 @@ namespace Noon.Infrastructure.Services.PicService
                         string imagepath = filePath + "\\" + filename; //that is the property that should be added to the product to have the actual path of the pics
                         if (System.IO.File.Exists(imagepath))
                         {
-                            imageURLs.Add(hostUrl + "/ImageUpload/Product/" + productId + "/" + filename);
+                            imageURLs.Add(hostUrl + $"/ImageUpload/{objectName}/" + productId + "/" + filename);
                         }
                     }
                 }
@@ -59,13 +61,13 @@ namespace Noon.Infrastructure.Services.PicService
             return imageURLs;
         }
 
-        public async Task<ImageRecord> SaveImage(IFormFileCollection fileCollection, Guid productId)
+        public async Task<ImageRecord> SaveImage(IFormFileCollection fileCollection, Guid id, string objectName)
         {
             ImageRecord imageResult = new ImageRecord();
             List<string> imagePaths = new List<string>();
             try
             {
-                string FilePath = GetFilePath(productId);
+                string FilePath = GetFilePath(id, objectName);
                 if (!System.IO.Directory.Exists(FilePath))
                 {
                     System.IO.Directory.CreateDirectory(FilePath);
@@ -73,9 +75,9 @@ namespace Noon.Infrastructure.Services.PicService
                 string apiUrl = GetRootUrl();
                 foreach (var file in fileCollection)
                 {  
-                    string staticFileToBeRetrievedFromDb = apiUrl + "/ImageUpload/Product/" + productId + "/" + productId + file.FileName;
+                    string staticFileToBeRetrievedFromDb = apiUrl + $"/ImageUpload/{objectName}/" + id + "/" + id + file.FileName;
 
-                    string imagePathTobeSaved = FilePath + "\\" + productId+ file.FileName;
+                    string imagePathTobeSaved = FilePath + "\\" + id + file.FileName;
 
                     if (System.IO.File.Exists(imagePathTobeSaved))
                     {
@@ -106,9 +108,21 @@ namespace Noon.Infrastructure.Services.PicService
 
             return imageResult;
         }
-        private string GetFilePath(Guid productId)
+        private string GetFilePath(Guid id , string objectName)
         {
-            return _environment.WebRootPath + "\\ImageUpload\\Product\\" + productId;
+            switch(objectName)
+            {
+                case "Product":
+                    return _environment.WebRootPath + "\\ImageUpload\\Product\\" + id;
+                case "Brand": 
+                    return _environment.WebRootPath + "\\ImageUpload\\Brand\\" + id;
+                case "Category":
+                   return _environment.WebRootPath + "\\ImageUpload\\Category\\" + id;
+                default: 
+                    return string.Empty;
+                 
+            }
+             
         }
         public string GetRootUrl()
         {
@@ -116,6 +130,24 @@ namespace Noon.Infrastructure.Services.PicService
             var baseUrl = $"{request?.Scheme}://{request?.Host.Value}";
 
             return baseUrl;
+        }
+
+        public void DeleteImage(Guid id , string objectName)
+        {
+            try
+            {
+                string filePath = GetFilePath(id , objectName);
+
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+
+                }
+            }
+            catch (Exception )
+            {
+                throw;
+            }
         }
     }
 }

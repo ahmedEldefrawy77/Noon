@@ -131,7 +131,12 @@ namespace Noon.Api.Controllers.AdminController
             return Ok(response);
         }
 
- 
+        [HttpDelete]
+        public async Task<IActionResult> DeleteProduct(Guid id)
+        {
+            BaseCommonResponse response = await _mediator.Send(new  DeleteProductRequest { id = id });
+            return Ok(response);
+        }
 
     }
 }

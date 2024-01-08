@@ -11,7 +11,8 @@ namespace Noon.Domain.IServices.IPicService
 {
     public interface IImageService
     {
-        Task<ImageRecord> SaveImage(IFormFileCollection  fileCollection, Guid productId);
-        Task<List<string>> GetImage(string hostUrl,Guid  productId);
+        Task<ImageRecord> SaveImage(IFormFileCollection  fileCollection, Guid productId, string objectName);
+        List<string> GetImage(string hostUrl,Guid  productId, string objectName);
+        void DeleteImage(Guid productId, string objectName);
     }
 }

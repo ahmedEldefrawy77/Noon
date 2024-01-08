@@ -22,6 +22,7 @@ namespace Noon.Infrastructure.Persistence.UOW
         private IMoneyRepository? _moneyRepository;
         private IWishListRepository? _wishListRepository;
         private IWishListProductRepository? _wishListProductRepository;
+        private IOtpRepository? _otpRepository;
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
@@ -51,7 +52,11 @@ namespace Noon.Infrastructure.Persistence.UOW
             => _wishListRepository ??= new WishListRepository(_context);
 
         public IWishListProductRepository WishListProductRepository 
-            => _wishListProductRepository ??= new WishListProductRepository(_context,_wishListRepository!);
+            => _wishListProductRepository ??= new WishListProductRepository(_context,WishListRepository);
+
+        public IOtpRepository OtpRepository => 
+            _otpRepository ??= new OtpRepository(_context, UserRepository);
+
         public void Dispose()
         {
             _context.Dispose();

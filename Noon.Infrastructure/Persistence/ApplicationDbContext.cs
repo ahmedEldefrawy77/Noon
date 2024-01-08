@@ -9,20 +9,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Noon.Infrastructure
+namespace Noon.Infrastructure.Persistence
 {
     public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
-      
-       
+
+
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<Brand> Brands{ get; set; }
+        public DbSet<Brand> Brands { get; set; }
         public DbSet<SpecifiedCategory> SpecifiedCategories { get; set; }
         public DbSet<Money> Moneys { get; set; }
-        protected override void OnModelCreating(ModelBuilder modelBuilder) 
+        public DbSet<OTP> OTPs { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly)
@@ -39,7 +40,7 @@ namespace Noon.Infrastructure
 
 
         }
-       
+
     }
-   
+
 }

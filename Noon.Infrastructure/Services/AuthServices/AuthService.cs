@@ -21,6 +21,7 @@ using Noon.Infrastructure.Persistence.Repositories;
 using Microsoft.Extensions.Options;
 using Noon.Domain.Persistence.IRepository;
 using Noon.Application.Contracts.Persistence.UnitOfWork;
+using Noon.Infrastructure.Persistence;
 
 namespace Noon.Infrastructure.Services.AuthServices
 {

@@ -84,7 +84,8 @@ namespace Noon.Application.Features.ProductFeatures.Handler.Commands
             ProductDto prdDto = _mapper.Map<ProductDto>(createdProduct);
 
             //Storing Product Image 
-           ImageRecord imageResult =  await _imageService.SaveImage(request.Productrecord.ProductImage,createdProduct.Id);
+           
+           ImageRecord imageResult =  await _imageService.SaveImage(request.Productrecord.ProductImage,createdProduct.Id, "Product");
             createdProduct.ImagePath = imageResult.imagePaths;
 
             //updating Product to store image paths
